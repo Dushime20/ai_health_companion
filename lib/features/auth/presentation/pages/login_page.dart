@@ -27,7 +27,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -175,7 +174,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   boxShadow: [
                     ...AppTheme.glowShadow,
                     BoxShadow(
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withAlpha(77),
                       blurRadius: 30,
                       offset: const Offset(0, 0),
                     ),
@@ -196,7 +195,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   letterSpacing: -0.5,
                   shadows: [
                     Shadow(
-                      color: Colors.black.withOpacity(0.3),
+                      color: Colors.black.withAlpha(77),
                       blurRadius: 10,
                       offset: const Offset(0, 2),
                     ),
@@ -207,7 +206,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
               Text(
                 'Empowering Rural Healthcare',
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withAlpha(230),
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -229,15 +228,15 @@ class _LoginPageState extends ConsumerState<LoginPage>
             child: Container(
               padding: const EdgeInsets.all(32),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withAlpha(26),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withAlpha(51),
                   width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withAlpha(26),
                     blurRadius: 30,
                     offset: const Offset(0, 10),
                   ),
@@ -260,7 +259,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     Text(
                       'Sign in to continue',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withAlpha(204),
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -329,7 +328,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                       child: Text(
                         'Forgot Password?',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withAlpha(204),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -365,26 +364,26 @@ class _LoginPageState extends ConsumerState<LoginPage>
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withAlpha(179),
           fontWeight: FontWeight.w500,
         ),
         prefixIcon: Icon(
           icon,
-          color: Colors.white.withOpacity(0.7),
+          color: Colors.white.withAlpha(179),
         ),
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: Colors.white.withOpacity(0.1),
+        fillColor: Colors.white.withAlpha(26),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withAlpha(77),
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withAlpha(77),
           ),
         ),
         focusedBorder: OutlineInputBorder(
@@ -420,14 +419,14 @@ class _LoginPageState extends ConsumerState<LoginPage>
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withAlpha(26),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
         ],
       ),
       child: ElevatedButton(
-        onPressed: _isLoading ? null : _handleLogin,
+        onPressed: _handleLogin,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
@@ -435,22 +434,13 @@ class _LoginPageState extends ConsumerState<LoginPage>
             borderRadius: BorderRadius.circular(16),
           ),
         ),
-        child: _isLoading
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
-                  strokeWidth: 2,
-                ),
-              )
-            : Text(
-                'Sign In',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppTheme.primaryColor,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+        child: Text(
+          'Sign In',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: AppTheme.primaryColor,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ),
     );
   }
@@ -468,7 +458,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   Expanded(
                     child: Container(
                       height: 1,
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withAlpha(77),
                     ),
                   ),
                   Padding(
@@ -476,7 +466,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                     child: Text(
                       'OR',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withAlpha(179),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -484,7 +474,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
                   Expanded(
                     child: Container(
                       height: 1,
-                      color: Colors.white.withOpacity(0.3),
+                      color: Colors.white.withAlpha(77),
                     ),
                   ),
                 ],
@@ -495,10 +485,10 @@ class _LoginPageState extends ConsumerState<LoginPage>
               Container(
                 height: 56,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Colors.white.withAlpha(26),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withAlpha(77),
                   ),
                 ),
                 child: ElevatedButton(
@@ -539,22 +529,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
     );
   }
 
-  void _handleLogin() async {
+  void _handleLogin() {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-      
-      // Simulate login process
-      await Future.delayed(const Duration(seconds: 2));
-      
-      setState(() {
-        _isLoading = false;
-      });
-      
-      if (mounted) {
-        context.go('/home');
-      }
+      context.go('/home');
     }
   }
 }
@@ -567,7 +544,7 @@ class BackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white.withOpacity(0.05)
+      ..color = Colors.white.withAlpha(13)
       ..style = PaintingStyle.fill;
 
     // Draw floating circles

@@ -120,7 +120,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   void _navigateToNextScreen() {
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
         context.go('/login');
       }

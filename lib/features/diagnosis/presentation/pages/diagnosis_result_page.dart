@@ -527,7 +527,7 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
               item,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-          )).toList(),
+          )),
         ],
       ),
     );
@@ -656,7 +656,7 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
                 ),
               ],
             ),
-          )).toList(),
+          )),
         ],
       ),
     );

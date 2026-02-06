@@ -3,10 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
-import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/feature_card.dart';
 import '../../../../shared/widgets/quick_action_button.dart';
-import '../../../../shared/widgets/status_indicator.dart';
 import '../../../../shared/widgets/animated_counter.dart';
 import '../../../../shared/widgets/chart_widget.dart';
 

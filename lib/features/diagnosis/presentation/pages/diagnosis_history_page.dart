@@ -20,7 +20,7 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
   
   String _searchQuery = '';
   String _selectedFilter = 'All';
-  String _selectedTimeRange = 'All';
+  final String _selectedTimeRange = 'All';
   
   final List<String> _filters = ['All', 'Recent', 'Critical', 'Follow-up'];
   final List<String> _timeRanges = ['All', 'Today', 'Week', 'Month', 'Year'];
@@ -575,7 +575,7 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
               ),
               ...(diagnosis['symptoms'] as List<String>).map((symptom) => 
                 Text('• $symptom', style: Theme.of(context).textTheme.bodySmall)
-              ).toList(),
+              ),
             ],
           ),
         ),
@@ -649,7 +649,7 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
                   Navigator.of(context).pop();
                 },
               );
-            }).toList(),
+            }),
           ],
         ),
         actions: [

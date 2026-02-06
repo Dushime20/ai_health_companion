@@ -115,7 +115,7 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/diagnosis/result',
       builder: (context, state) {
-        final diagnosisData = state.extra as Map<String, dynamic>? ?? {};
+        final diagnosisData = state.extra as Map<String, dynamic>;
         return DiagnosisResultPage(diagnosisData: diagnosisData);
       },
     ),

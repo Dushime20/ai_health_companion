@@ -320,7 +320,7 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
               padding: const EdgeInsets.only(bottom: 16),
               child: _buildTutorialCard(tutorial),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

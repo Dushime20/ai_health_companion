@@ -241,7 +241,7 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
                   ),
                 ),
                 Text(
-                  '${_pendingRecords} pending',
+                  '$_pendingRecords pending',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppTheme.textSecondary,
                   ),
