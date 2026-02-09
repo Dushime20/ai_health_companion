@@ -4,17 +4,16 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/animated_counter.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class DiagnosisResultPage extends ConsumerStatefulWidget {
   final Map<String, dynamic> diagnosisData;
-  
-  const DiagnosisResultPage({
-    super.key,
-    required this.diagnosisData,
-  });
+
+  const DiagnosisResultPage({super.key, required this.diagnosisData});
 
   @override
-  ConsumerState<DiagnosisResultPage> createState() => _DiagnosisResultPageState();
+  ConsumerState<DiagnosisResultPage> createState() =>
+      _DiagnosisResultPageState();
 }
 
 class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
@@ -22,7 +21,7 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _slideAnimation;
-  
+
   int _selectedTab = 0;
   final List<String> _tabs = ['Results', 'Details', 'Recommendations'];
 
@@ -66,22 +65,20 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
-    ));
-    
-    _slideAnimation = Tween<double>(
-      begin: 50.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
-    ));
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
+      ),
+    );
+
+    _slideAnimation = Tween<double>(begin: 50.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
+      ),
+    );
   }
 
   void _startAnimations() {
@@ -98,18 +95,19 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('AI Diagnosis Results'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+      appBar: AppHeader(
+        title: 'AI Diagnosis Results',
+        subtitle: 'Confidence: ${_predictions[0]['confidence']}%',
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: _shareResults,
+            tooltip: 'Share',
           ),
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: _exportResults,
+            tooltip: 'Export',
           ),
         ],
       ),
@@ -124,15 +122,13 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
                 children: [
                   // Header Section
                   _buildHeaderSection(),
-                  
+
                   // Tab Bar
                   _buildTabBar(),
-                  
+
                   // Content
-                  Expanded(
-                    child: _buildTabContent(),
-                  ),
-                  
+                  Expanded(child: _buildTabContent()),
+
                   // Action Buttons
                   _buildActionButtons(),
                 ],
@@ -209,36 +205,41 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
         boxShadow: AppTheme.softShadow,
       ),
       child: Row(
-        children: _tabs.asMap().entries.map((entry) {
-          final index = entry.key;
-          final tab = entry.value;
-          final isSelected = _selectedTab == index;
-          
-          return Expanded(
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  _selectedTab = index;
-                });
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  color: isSelected ? AppTheme.primaryColor : Colors.transparent,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  tab,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : AppTheme.textSecondary,
-                    fontWeight: FontWeight.w600,
+        children:
+            _tabs.asMap().entries.map((entry) {
+              final index = entry.key;
+              final tab = entry.value;
+              final isSelected = _selectedTab == index;
+
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedTab = index;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    decoration: BoxDecoration(
+                      color:
+                          isSelected
+                              ? AppTheme.primaryColor
+                              : Colors.transparent,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Text(
+                      tab,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color:
+                            isSelected ? Colors.white : AppTheme.textSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     );
   }
@@ -264,7 +265,7 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
           // Top Prediction
           _buildTopPredictionCard(),
           const SizedBox(height: 20),
-          
+
           // Other Predictions
           _buildOtherPredictions(),
         ],
@@ -280,10 +281,7 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
         boxShadow: AppTheme.mediumShadow,
-        border: Border.all(
-          color: topPrediction['color'],
-          width: 2,
-        ),
+        border: Border.all(color: topPrediction['color'], width: 2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,7 +321,10 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: topPrediction['color'].withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -343,37 +344,41 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
           const SizedBox(height: 16),
           Text(
             topPrediction['description'],
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 16),
           Text(
             'Key Symptoms:',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: (topPrediction['symptoms'] as List<String>).map((symptom) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: topPrediction['color'].withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  symptom,
-                  style: TextStyle(
-                    color: topPrediction['color'],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              );
-            }).toList(),
+            children:
+                (topPrediction['symptoms'] as List<String>).map((symptom) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: topPrediction['color'].withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      symptom,
+                      style: TextStyle(
+                        color: topPrediction['color'],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  );
+                }).toList(),
           ),
         ],
       ),
@@ -386,9 +391,9 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
       children: [
         Text(
           'Other Possible Conditions',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 16),
         ...(_predictions.skip(1).map((prediction) {
@@ -466,12 +471,12 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
         children: [
           Text(
             'Diagnosis Details',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 20),
-          
+
           // Patient Information
           _buildDetailSection('Patient Information', [
             'Age: ${widget.diagnosisData['age'] ?? 'N/A'}',
@@ -479,9 +484,9 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
             'Weight: ${widget.diagnosisData['weight'] ?? 'N/A'} kg',
             'Height: ${widget.diagnosisData['height'] ?? 'N/A'} cm',
           ]),
-          
+
           const SizedBox(height: 20),
-          
+
           // Vital Signs
           _buildDetailSection('Vital Signs', [
             'Temperature: ${widget.diagnosisData['temperature'] ?? 'N/A'}°C',
@@ -490,12 +495,16 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
             'Respiratory Rate: ${widget.diagnosisData['respiratory_rate'] ?? 'N/A'} breaths/min',
             'Oxygen Saturation: ${widget.diagnosisData['oxygen_saturation'] ?? 'N/A'}%',
           ]),
-          
+
           const SizedBox(height: 20),
-          
+
           // Selected Symptoms
-          _buildDetailSection('Selected Symptoms', 
-            (widget.diagnosisData['symptoms'] as List<String>?)?.map((symptom) => '• $symptom').toList() ?? ['No symptoms selected']
+          _buildDetailSection(
+            'Selected Symptoms',
+            (widget.diagnosisData['symptoms'] as List<String>?)
+                    ?.map((symptom) => '• $symptom')
+                    .toList() ??
+                ['No symptoms selected'],
           ),
         ],
       ),
@@ -521,13 +530,12 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
             ),
           ),
           const SizedBox(height: 12),
-          ...items.map((item) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              item,
-              style: Theme.of(context).textTheme.bodyMedium,
+          ...items.map(
+            (item) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(item, style: Theme.of(context).textTheme.bodyMedium),
             ),
-          )),
+          ),
         ],
       ),
     );
@@ -541,12 +549,12 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
         children: [
           Text(
             'Recommendations',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 20),
-          
+
           // Immediate Actions
           _buildRecommendationCard(
             'Immediate Actions',
@@ -559,9 +567,9 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
             Icons.warning,
             AppTheme.warningColor,
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Medications
           _buildRecommendationCard(
             'Recommended Medications',
@@ -574,9 +582,9 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
             Icons.medication,
             AppTheme.primaryColor,
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Follow-up
           _buildRecommendationCard(
             'Follow-up Care',
@@ -618,45 +626,43 @@ class _DiagnosisResultPageState extends ConsumerState<DiagnosisResultPage>
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 20,
-                ),
+                child: Icon(icon, color: color, size: 20),
               ),
               const SizedBox(width: 12),
               Text(
                 title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          ...recommendations.map((recommendation) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 6,
-                  height: 6,
-                  margin: const EdgeInsets.only(top: 6, right: 12),
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(3),
+          ...recommendations.map(
+            (recommendation) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 6,
+                    height: 6,
+                    margin: const EdgeInsets.only(top: 6, right: 12),
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(3),
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Text(
-                    recommendation,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                  Expanded(
+                    child: Text(
+                      recommendation,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          )),
+          ),
         ],
       ),
     );

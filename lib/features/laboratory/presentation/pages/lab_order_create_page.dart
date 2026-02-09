@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class LabOrderCreatePage extends StatefulWidget {
   final String patientId;
@@ -160,10 +161,18 @@ class _LabOrderCreatePageState extends State<LabOrderCreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Lab Order'),
+      appBar: AppHeader(
+        title: 'Create Lab Order',
+        subtitle:
+            widget.patientName != null
+                ? 'For ${widget.patientName}'
+                : 'New lab order',
         actions: [
-          IconButton(icon: const Icon(Icons.send), onPressed: _submitOrder),
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: _submitOrder,
+            tooltip: 'Submit Order',
+          ),
         ],
       ),
       body: Form(

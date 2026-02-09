@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/animated_counter.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class SyncStatusPage extends ConsumerStatefulWidget {
   const SyncStatusPage({super.key});
@@ -16,7 +17,7 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
   late AnimationController _animationController;
   late Animation<double> _pulseAnimation;
   late Animation<double> _rotationAnimation;
-  
+
   bool _isOnline = true;
   bool _isSyncing = false;
   int _pendingRecords = 15;
@@ -34,22 +35,14 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
       duration: const Duration(seconds: 2),
       vsync: this,
     );
-    
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-    
-    _rotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.linear,
-    ));
+
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+
+    _rotationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.linear),
+    );
   }
 
   void _startAnimations() {
@@ -66,10 +59,16 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Sync Status'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+      appBar: AppHeader(
+        title: 'Sync Status',
+        subtitle: _isOnline ? 'Connected' : 'Offline',
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {},
+            tooltip: 'Sync Now',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -78,19 +77,19 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
             // Connection Status Card
             _buildConnectionStatusCard(),
             const SizedBox(height: 24),
-            
+
             // Sync Progress
             _buildSyncProgressCard(),
             const SizedBox(height: 24),
-            
+
             // Statistics
             _buildStatisticsCards(),
             const SizedBox(height: 24),
-            
+
             // Recent Sync History
             _buildSyncHistory(),
             const SizedBox(height: 24),
-            
+
             // Action Buttons
             _buildActionButtons(),
           ],
@@ -103,17 +102,18 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: _isOnline 
-            ? const LinearGradient(
-                colors: [AppTheme.successColor, Color(0xFF66BB6A)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : const LinearGradient(
-                colors: [AppTheme.errorColor, Color(0xFFEF5350)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+        gradient:
+            _isOnline
+                ? const LinearGradient(
+                  colors: [AppTheme.successColor, Color(0xFF66BB6A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+                : const LinearGradient(
+                  colors: [AppTheme.errorColor, Color(0xFFEF5350)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: AppTheme.mediumShadow,
       ),
@@ -140,7 +140,8 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
                   ),
                   child: Icon(
                     _isOnline ? Icons.cloud_done : Icons.cloud_off,
-                    color: _isOnline ? AppTheme.successColor : AppTheme.errorColor,
+                    color:
+                        _isOnline ? AppTheme.successColor : AppTheme.errorColor,
                     size: 40,
                   ),
                 ),
@@ -157,9 +158,7 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
           ),
           const SizedBox(height: 8),
           Text(
-            _isOnline 
-                ? 'All systems operational'
-                : 'Working in offline mode',
+            _isOnline ? 'All systems operational' : 'Working in offline mode',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Colors.white.withOpacity(0.9),
             ),
@@ -185,20 +184,21 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
             children: [
               Icon(
                 _isSyncing ? Icons.sync : Icons.sync_problem,
-                color: _isSyncing ? AppTheme.primaryColor : AppTheme.warningColor,
+                color:
+                    _isSyncing ? AppTheme.primaryColor : AppTheme.warningColor,
                 size: 24,
               ),
               const SizedBox(width: 12),
               Text(
                 'Sync Progress',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
             ],
           ),
           const SizedBox(height: 20),
-          
+
           if (_isSyncing) ...[
             AnimatedBuilder(
               animation: _rotationAnimation,
@@ -209,7 +209,9 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
                     width: 40,
                     height: 40,
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        AppTheme.primaryColor,
+                      ),
                       strokeWidth: 4,
                     ),
                   ),
@@ -219,15 +221,17 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
             const SizedBox(height: 16),
             Text(
               'Syncing data...',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
             ),
           ] else ...[
             LinearProgressIndicator(
               value: 0.75,
               backgroundColor: AppTheme.textDisabled.withOpacity(0.2),
-              valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppTheme.primaryColor,
+              ),
               minHeight: 8,
             ),
             const SizedBox(height: 12),
@@ -236,9 +240,9 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
               children: [
                 Text(
                   '75% Complete',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 Text(
                   '$_pendingRecords pending',
@@ -287,7 +291,12 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -303,11 +312,7 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 24,
-            ),
+            child: Icon(icon, color: color, size: 24),
           ),
           const SizedBox(height: 12),
           AnimatedCounter(
@@ -321,9 +326,9 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
           const SizedBox(height: 4),
           Text(
             title,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -344,17 +349,13 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
         children: [
           Row(
             children: [
-              const Icon(
-                Icons.history,
-                color: AppTheme.primaryColor,
-                size: 24,
-              ),
+              const Icon(Icons.history, color: AppTheme.primaryColor, size: 24),
               const SizedBox(width: 12),
               Text(
                 'Recent Sync History',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -414,9 +415,9 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 Text(
                   subtitle,
@@ -429,9 +430,9 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
           ),
           Text(
             time,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
           ),
         ],
       ),
@@ -453,21 +454,20 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
-            icon: _isSyncing 
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      strokeWidth: 2,
-                    ),
-                  )
-                : const Icon(Icons.sync),
+            icon:
+                _isSyncing
+                    ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        strokeWidth: 2,
+                      ),
+                    )
+                    : const Icon(Icons.sync),
             label: Text(
               _isSyncing ? 'Syncing...' : 'Sync Now',
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -477,7 +477,8 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
           child: OutlinedButton.icon(
             onPressed: _toggleConnection,
             style: OutlinedButton.styleFrom(
-              foregroundColor: _isOnline ? AppTheme.errorColor : AppTheme.successColor,
+              foregroundColor:
+                  _isOnline ? AppTheme.errorColor : AppTheme.successColor,
               side: BorderSide(
                 color: _isOnline ? AppTheme.errorColor : AppTheme.successColor,
               ),
@@ -489,9 +490,7 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
             icon: Icon(_isOnline ? Icons.cloud_off : Icons.cloud_done),
             label: Text(
               _isOnline ? 'Go Offline' : 'Go Online',
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -503,7 +502,7 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
     setState(() {
       _isSyncing = true;
     });
-    
+
     // Simulate sync process
     Future.delayed(const Duration(seconds: 3), () {
       setState(() {
@@ -511,7 +510,7 @@ class _SyncStatusPageState extends ConsumerState<SyncStatusPage>
         _pendingRecords = 0;
         _syncedRecords += 15;
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Sync completed successfully'),

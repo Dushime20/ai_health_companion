@@ -4,12 +4,14 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/search_bar_widget.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class DiagnosisHistoryPage extends ConsumerStatefulWidget {
   const DiagnosisHistoryPage({super.key});
 
   @override
-  ConsumerState<DiagnosisHistoryPage> createState() => _DiagnosisHistoryPageState();
+  ConsumerState<DiagnosisHistoryPage> createState() =>
+      _DiagnosisHistoryPageState();
 }
 
 class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
@@ -17,11 +19,11 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _slideAnimation;
-  
+
   String _searchQuery = '';
   String _selectedFilter = 'All';
   final String _selectedTimeRange = 'All';
-  
+
   final List<String> _filters = ['All', 'Recent', 'Critical', 'Follow-up'];
   final List<String> _timeRanges = ['All', 'Today', 'Week', 'Month', 'Year'];
 
@@ -111,22 +113,20 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
-    ));
-    
-    _slideAnimation = Tween<double>(
-      begin: 50.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
-    ));
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
+      ),
+    );
+
+    _slideAnimation = Tween<double>(begin: 50.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
+      ),
+    );
   }
 
   void _startAnimations() {
@@ -145,18 +145,19 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Diagnosis History'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+      appBar: AppHeader(
+        title: 'Diagnosis History',
+        subtitle: '${_diagnosisHistory.length} records found',
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: _showFilterDialog,
+            tooltip: 'Filter',
           ),
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: _exportHistory,
+            tooltip: 'Export',
           ),
         ],
       ),
@@ -181,32 +182,35 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
                       },
                     ),
                   ),
-                  
+
                   // Filter Chips
                   _buildFilterChips(),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   // Statistics
                   _buildStatistics(),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Diagnosis List
                   Expanded(
-                    child: filteredDiagnoses.isEmpty
-                        ? _buildEmptyState()
-                        : ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            itemCount: filteredDiagnoses.length,
-                            itemBuilder: (context, index) {
-                              final diagnosis = filteredDiagnoses[index];
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: _buildDiagnosisCard(diagnosis),
-                              );
-                            },
-                          ),
+                    child:
+                        filteredDiagnoses.isEmpty
+                            ? _buildEmptyState()
+                            : ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              itemCount: filteredDiagnoses.length,
+                              itemBuilder: (context, index) {
+                                final diagnosis = filteredDiagnoses[index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: _buildDiagnosisCard(diagnosis),
+                                );
+                              },
+                            ),
                   ),
                 ],
               ),
@@ -248,9 +252,11 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
 
   Widget _buildStatistics() {
     final totalDiagnoses = _diagnosisHistory.length;
-    final criticalDiagnoses = _diagnosisHistory.where((d) => d['isCritical']).length;
-    final followUpRequired = _diagnosisHistory.where((d) => d['followUpRequired']).length;
-    
+    final criticalDiagnoses =
+        _diagnosisHistory.where((d) => d['isCritical']).length;
+    final followUpRequired =
+        _diagnosisHistory.where((d) => d['followUpRequired']).length;
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.all(16),
@@ -262,7 +268,11 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
       child: Row(
         children: [
           Expanded(
-            child: _buildStatItem('Total', totalDiagnoses.toString(), AppTheme.primaryColor),
+            child: _buildStatItem(
+              'Total',
+              totalDiagnoses.toString(),
+              AppTheme.primaryColor,
+            ),
           ),
           Container(
             width: 1,
@@ -270,7 +280,11 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
             color: AppTheme.textDisabled.withOpacity(0.3),
           ),
           Expanded(
-            child: _buildStatItem('Critical', criticalDiagnoses.toString(), AppTheme.errorColor),
+            child: _buildStatItem(
+              'Critical',
+              criticalDiagnoses.toString(),
+              AppTheme.errorColor,
+            ),
           ),
           Container(
             width: 1,
@@ -278,7 +292,11 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
             color: AppTheme.textDisabled.withOpacity(0.3),
           ),
           Expanded(
-            child: _buildStatItem('Follow-up', followUpRequired.toString(), AppTheme.warningColor),
+            child: _buildStatItem(
+              'Follow-up',
+              followUpRequired.toString(),
+              AppTheme.warningColor,
+            ),
           ),
         ],
       ),
@@ -297,9 +315,9 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
         ),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppTheme.textSecondary,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
         ),
       ],
     );
@@ -310,9 +328,10 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: diagnosis['isCritical'] 
-            ? const BorderSide(color: AppTheme.errorColor, width: 2)
-            : BorderSide.none,
+        side:
+            diagnosis['isCritical']
+                ? const BorderSide(color: AppTheme.errorColor, width: 2)
+                : BorderSide.none,
       ),
       child: InkWell(
         onTap: () => _viewDiagnosisDetails(diagnosis),
@@ -331,33 +350,36 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
                       children: [
                         Text(
                           diagnosis['patientName'],
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                         Text(
                           'ID: ${diagnosis['patientId']}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.textSecondary,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppTheme.textSecondary),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: diagnosis['isCritical'] 
-                          ? AppTheme.errorColor.withOpacity(0.1)
-                          : AppTheme.successColor.withOpacity(0.1),
+                      color:
+                          diagnosis['isCritical']
+                              ? AppTheme.errorColor.withOpacity(0.1)
+                              : AppTheme.successColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       diagnosis['status'],
                       style: TextStyle(
-                        color: diagnosis['isCritical'] 
-                            ? AppTheme.errorColor
-                            : AppTheme.successColor,
+                        color:
+                            diagnosis['isCritical']
+                                ? AppTheme.errorColor
+                                : AppTheme.successColor,
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
                       ),
@@ -365,9 +387,9 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               // Diagnosis Info
               Row(
                 children: [
@@ -377,24 +399,30 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
                       children: [
                         Text(
                           diagnosis['primaryDiagnosis'],
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: AppTheme.primaryColor,
                           ),
                         ),
                         Text(
                           'Confidence: ${diagnosis['confidence'].toStringAsFixed(1)}%',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppTheme.textSecondary,
-                          ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppTheme.textSecondary),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: _getSeverityColor(diagnosis['severity']).withOpacity(0.1),
+                      color: _getSeverityColor(
+                        diagnosis['severity'],
+                      ).withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -408,21 +436,21 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               // Symptoms
               Text(
                 'Symptoms: ${(diagnosis['symptoms'] as List<String>).join(', ')}',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppTheme.textSecondary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              
+
               const SizedBox(height: 12),
-              
+
               // Footer
               Row(
                 children: [
@@ -441,7 +469,10 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
                   const Spacer(),
                   if (diagnosis['followUpRequired'])
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppTheme.warningColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
@@ -480,24 +511,20 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.history,
-            size: 80,
-            color: AppTheme.textSecondary,
-          ),
+          Icon(Icons.history, size: 80, color: AppTheme.textSecondary),
           const SizedBox(height: 16),
           Text(
             'No diagnoses found',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 8),
           Text(
             'Try adjusting your search or filter criteria',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
           ),
         ],
       ),
@@ -505,23 +532,24 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
   }
 
   List<Map<String, dynamic>> _getFilteredDiagnoses() {
-    var filtered = _diagnosisHistory.where((diagnosis) {
-      final matchesSearch = diagnosis['patientName']
-          .toString()
-          .toLowerCase()
-          .contains(_searchQuery.toLowerCase()) ||
-          diagnosis['primaryDiagnosis']
-          .toString()
-          .toLowerCase()
-          .contains(_searchQuery.toLowerCase());
-      
-      final matchesFilter = _selectedFilter == 'All' ||
-          (_selectedFilter == 'Recent' && _isRecent(diagnosis['date'])) ||
-          (_selectedFilter == 'Critical' && diagnosis['isCritical']) ||
-          (_selectedFilter == 'Follow-up' && diagnosis['followUpRequired']);
-      
-      return matchesSearch && matchesFilter;
-    }).toList();
+    var filtered =
+        _diagnosisHistory.where((diagnosis) {
+          final matchesSearch =
+              diagnosis['patientName'].toString().toLowerCase().contains(
+                _searchQuery.toLowerCase(),
+              ) ||
+              diagnosis['primaryDiagnosis'].toString().toLowerCase().contains(
+                _searchQuery.toLowerCase(),
+              );
+
+          final matchesFilter =
+              _selectedFilter == 'All' ||
+              (_selectedFilter == 'Recent' && _isRecent(diagnosis['date'])) ||
+              (_selectedFilter == 'Critical' && diagnosis['isCritical']) ||
+              (_selectedFilter == 'Follow-up' && diagnosis['followUpRequired']);
+
+          return matchesSearch && matchesFilter;
+        }).toList();
 
     // Sort by date (most recent first)
     filtered.sort((a, b) => b['date'].compareTo(a['date']));
@@ -552,47 +580,57 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
   void _viewDiagnosisDetails(Map<String, dynamic> diagnosis) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Diagnosis Details - ${diagnosis['patientName']}'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildDetailRow('Patient ID', diagnosis['patientId']),
-              _buildDetailRow('Date', diagnosis['date']),
-              _buildDetailRow('Time', diagnosis['time']),
-              _buildDetailRow('Primary Diagnosis', diagnosis['primaryDiagnosis']),
-              _buildDetailRow('Confidence', '${diagnosis['confidence'].toStringAsFixed(1)}%'),
-              _buildDetailRow('Severity', diagnosis['severity']),
-              _buildDetailRow('Status', diagnosis['status']),
-              const SizedBox(height: 8),
-              Text(
-                'Symptoms:',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+      builder:
+          (context) => AlertDialog(
+            title: Text('Diagnosis Details - ${diagnosis['patientName']}'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildDetailRow('Patient ID', diagnosis['patientId']),
+                  _buildDetailRow('Date', diagnosis['date']),
+                  _buildDetailRow('Time', diagnosis['time']),
+                  _buildDetailRow(
+                    'Primary Diagnosis',
+                    diagnosis['primaryDiagnosis'],
+                  ),
+                  _buildDetailRow(
+                    'Confidence',
+                    '${diagnosis['confidence'].toStringAsFixed(1)}%',
+                  ),
+                  _buildDetailRow('Severity', diagnosis['severity']),
+                  _buildDetailRow('Status', diagnosis['status']),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Symptoms:',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  ...(diagnosis['symptoms'] as List<String>).map(
+                    (symptom) => Text(
+                      '• $symptom',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
+                ],
               ),
-              ...(diagnosis['symptoms'] as List<String>).map((symptom) => 
-                Text('• $symptom', style: Theme.of(context).textTheme.bodySmall)
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  // TODO: Navigate to full diagnosis report
+                },
+                child: const Text('View Full Report'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // TODO: Navigate to full diagnosis report
-            },
-            child: const Text('View Full Report'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -606,16 +644,13 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
             width: 100,
             child: Text(
               '$label:',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
           Expanded(
-            child: Text(
-              value,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+            child: Text(value, style: Theme.of(context).textTheme.bodySmall),
           ),
         ],
       ),
@@ -625,40 +660,41 @@ class _DiagnosisHistoryPageState extends ConsumerState<DiagnosisHistoryPage>
   void _showFilterDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Filter Diagnoses'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Filter by Status:',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Filter Diagnoses'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Filter by Status:',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                ..._filters.map((filter) {
+                  return RadioListTile<String>(
+                    title: Text(filter),
+                    value: filter,
+                    groupValue: _selectedFilter,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedFilter = value!;
+                      });
+                      Navigator.of(context).pop();
+                    },
+                  );
+                }),
+              ],
             ),
-            const SizedBox(height: 8),
-            ..._filters.map((filter) {
-              return RadioListTile<String>(
-                title: Text(filter),
-                value: filter,
-                groupValue: _selectedFilter,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedFilter = value!;
-                  });
-                  Navigator.of(context).pop();
-                },
-              );
-            }),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

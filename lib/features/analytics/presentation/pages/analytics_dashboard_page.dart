@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/chart_widget.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class AnalyticsDashboardPage extends ConsumerWidget {
   const AnalyticsDashboardPage({super.key});
@@ -10,8 +11,17 @@ class AnalyticsDashboardPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Analytics Dashboard'),
+      appBar: AppHeader(
+        title: 'Analytics Dashboard',
+        subtitle: 'View health statistics and trends',
+        showBackButton: false,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {},
+            tooltip: 'Filter',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -34,7 +44,7 @@ class AnalyticsDashboardPage extends ConsumerWidget {
               title: 'Patient Demographics',
               chart: ChartWidget(), // Replace with actual demographics chart
             ),
-             const SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             // Diagnosis Accuracy
             _buildChartCard(
@@ -56,15 +66,40 @@ class AnalyticsDashboardPage extends ConsumerWidget {
       mainAxisSpacing: 16,
       childAspectRatio: 1.8, // Make cards taller
       children: [
-        _buildSummaryCard('Total Diagnoses', '452', Icons.psychology, AppTheme.primaryColor),
-        _buildSummaryCard('Total Patients', '152', Icons.people, AppTheme.secondaryColor),
-        _buildSummaryCard('Avg. Accuracy', '92.5%', Icons.check_circle, AppTheme.successColor),
-        _buildSummaryCard('Syncs Today', '12', Icons.sync, AppTheme.accentColor),
+        _buildSummaryCard(
+          'Total Diagnoses',
+          '452',
+          Icons.psychology,
+          AppTheme.primaryColor,
+        ),
+        _buildSummaryCard(
+          'Total Patients',
+          '152',
+          Icons.people,
+          AppTheme.secondaryColor,
+        ),
+        _buildSummaryCard(
+          'Avg. Accuracy',
+          '92.5%',
+          Icons.check_circle,
+          AppTheme.successColor,
+        ),
+        _buildSummaryCard(
+          'Syncs Today',
+          '12',
+          Icons.sync,
+          AppTheme.accentColor,
+        ),
       ],
     );
   }
 
-  Widget _buildSummaryCard(String title, String value, IconData icon, Color color) {
+  Widget _buildSummaryCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -106,9 +141,7 @@ class AnalyticsDashboardPage extends ConsumerWidget {
   Widget _buildChartCard({required String title, required Widget chart}) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -116,10 +149,7 @@ class AnalyticsDashboardPage extends ConsumerWidget {
           children: [
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             SizedBox(height: 200, child: chart),

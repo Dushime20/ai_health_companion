@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class PatientDetailPage extends StatefulWidget {
   final String patientId;
-  
-  const PatientDetailPage({
-    super.key,
-    required this.patientId,
-  });
+
+  const PatientDetailPage({super.key, required this.patientId});
 
   @override
   State<PatientDetailPage> createState() => _PatientDetailPageState();
@@ -96,19 +95,26 @@ class _PatientDetailPageState extends State<PatientDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_patientData['name']),
-        elevation: 0,
+      appBar: AppHeader(
+        title: _patientData['name'],
+        subtitle: 'Patient ID: ${widget.patientId}',
         actions: [
           IconButton(
             icon: const Icon(Icons.edit),
             onPressed: () {
-              // Navigate to edit patient
+              context.go(
+                '/patient/${widget.patientId}/edit',
+                extra: _patientData,
+              );
             },
+            tooltip: 'Edit Patient',
           ),
         ],
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
           tabs: const [
             Tab(text: 'Overview'),
             Tab(text: 'History'),
@@ -174,10 +180,7 @@ class _PatientDetailPageState extends State<PatientDetailPage>
                         Icons.cake,
                       ),
                       const SizedBox(width: 8),
-                      _buildInfoChip(
-                        _patientData['gender'],
-                        Icons.person,
-                      ),
+                      _buildInfoChip(_patientData['gender'], Icons.person),
                       const SizedBox(width: 8),
                       _buildInfoChip(
                         _patientData['bloodType'],
@@ -211,7 +214,10 @@ class _PatientDetailPageState extends State<PatientDetailPage>
                   _buildDetailRow(Icons.email, 'Email', _patientData['email']),
                   const Divider(),
                   _buildDetailRow(
-                      Icons.location_on, 'Address', _patientData['address']),
+                    Icons.location_on,
+                    'Address',
+                    _patientData['address'],
+                  ),
                 ],
               ),
             ),
@@ -230,10 +236,16 @@ class _PatientDetailPageState extends State<PatientDetailPage>
               child: Column(
                 children: [
                   _buildDetailRow(
-                      Icons.monitor_weight, 'Weight', _patientData['weight']),
+                    Icons.monitor_weight,
+                    'Weight',
+                    _patientData['weight'],
+                  ),
                   const Divider(),
                   _buildDetailRow(
-                      Icons.height, 'Height', _patientData['height']),
+                    Icons.height,
+                    'Height',
+                    _patientData['height'],
+                  ),
                 ],
               ),
             ),
@@ -254,40 +266,42 @@ class _PatientDetailPageState extends State<PatientDetailPage>
                 children: [
                   const Text(
                     'Allergies',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
-                    children: (_patientData['allergies'] as List)
-                        .map((allergy) => Chip(
-                              label: Text(allergy),
-                              backgroundColor: Colors.red[100],
-                              labelStyle: const TextStyle(color: Colors.red),
-                            ))
-                        .toList(),
+                    children:
+                        (_patientData['allergies'] as List)
+                            .map(
+                              (allergy) => Chip(
+                                label: Text(allergy),
+                                backgroundColor: Colors.red[100],
+                                labelStyle: const TextStyle(color: Colors.red),
+                              ),
+                            )
+                            .toList(),
                   ),
                   const SizedBox(height: 16),
                   const Text(
                     'Chronic Conditions',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
-                    children: (_patientData['chronicConditions'] as List)
-                        .map((condition) => Chip(
-                              label: Text(condition),
-                              backgroundColor: Colors.orange[100],
-                              labelStyle: const TextStyle(color: Colors.orange),
-                            ))
-                        .toList(),
+                    children:
+                        (_patientData['chronicConditions'] as List)
+                            .map(
+                              (condition) => Chip(
+                                label: Text(condition),
+                                backgroundColor: Colors.orange[100],
+                                labelStyle: const TextStyle(
+                                  color: Colors.orange,
+                                ),
+                              ),
+                            )
+                            .toList(),
                   ),
                 ],
               ),
@@ -313,8 +327,10 @@ class _PatientDetailPageState extends State<PatientDetailPage>
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: AppTheme.primaryColor.withAlpha(26),
-              child: const Icon(Icons.medical_services,
-                  color: AppTheme.primaryColor),
+              child: const Icon(
+                Icons.medical_services,
+                color: AppTheme.primaryColor,
+              ),
             ),
             title: Text(
               visit['diagnosis'],
@@ -367,7 +383,10 @@ class _PatientDetailPageState extends State<PatientDetailPage>
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: AppTheme.secondaryColor.withAlpha(26),
-              child: const Icon(Icons.medication, color: AppTheme.secondaryColor),
+              child: const Icon(
+                Icons.medication,
+                color: AppTheme.secondaryColor,
+              ),
             ),
             title: Text(
               medication['name'],
@@ -448,7 +467,9 @@ class _PatientDetailPageState extends State<PatientDetailPage>
               onPressed: () {
                 // TODO: Navigate to new diagnosis page
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('New Diagnosis not implemented yet.')),
+                  const SnackBar(
+                    content: Text('New Diagnosis not implemented yet.'),
+                  ),
                 );
               },
             ),
@@ -459,7 +480,9 @@ class _PatientDetailPageState extends State<PatientDetailPage>
               onPressed: () {
                 // TODO: Implement voice input functionality
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Voice input not implemented yet.')),
+                  const SnackBar(
+                    content: Text('Voice input not implemented yet.'),
+                  ),
                 );
               },
             ),
@@ -496,10 +519,7 @@ class _PatientDetailPageState extends State<PatientDetailPage>
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -542,10 +562,7 @@ class _PatientDetailPageState extends State<PatientDetailPage>
               children: [
                 Text(
                   label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 2),
                 Text(

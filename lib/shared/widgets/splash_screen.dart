@@ -18,7 +18,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   late AnimationController _textController;
   late AnimationController _particleController;
   late AnimationController _pulseController;
-  
+
   late Animation<double> _logoScaleAnimation;
   late Animation<double> _logoRotationAnimation;
   late Animation<double> _textFadeAnimation;
@@ -40,72 +40,60 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-    
-    _logoScaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _logoController,
-      curve: const Interval(0.0, 0.6, curve: Curves.elasticOut),
-    ));
-    
-    _logoRotationAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _logoController,
-      curve: const Interval(0.2, 0.8, curve: Curves.easeInOut),
-    ));
+
+    _logoScaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _logoController,
+        curve: const Interval(0.0, 0.6, curve: Curves.elasticOut),
+      ),
+    );
+
+    _logoRotationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _logoController,
+        curve: const Interval(0.2, 0.8, curve: Curves.easeInOut),
+      ),
+    );
 
     // Text animations
     _textController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
-    _textFadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
-    ));
-    
-    _textSlideAnimation = Tween<double>(
-      begin: 50.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
-    ));
+
+    _textFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _textController,
+        curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
+      ),
+    );
+
+    _textSlideAnimation = Tween<double>(begin: 50.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _textController,
+        curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
+      ),
+    );
 
     // Particle animation
     _particleController = AnimationController(
       duration: const Duration(milliseconds: 3000),
       vsync: this,
     );
-    
-    _particleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _particleController,
-      curve: Curves.linear,
-    ));
+
+    _particleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _particleController, curve: Curves.linear),
+    );
 
     // Pulse animation
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-    
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
   }
 
   void _startAnimations() {
@@ -140,14 +128,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppTheme.primaryGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
         child: Stack(
           children: [
             // Animated particles background
             _buildParticleBackground(),
-            
+
             // Main content
             Center(
               child: Column(
@@ -194,9 +180,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       );
                     },
                   ),
-                  
+
                   const SizedBox(height: 40),
-                  
+
                   // Animated text
                   AnimatedBuilder(
                     animation: _textController,
@@ -209,7 +195,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                             children: [
                               Text(
                                 AppConstants.appName,
-                                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.displayMedium?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w800,
                                   letterSpacing: -0.5,
@@ -225,7 +213,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                               const SizedBox(height: 12),
                               Text(
                                 AppConstants.appDescription,
-                                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyLarge?.copyWith(
                                   color: Colors.white.withOpacity(0.9),
                                   fontWeight: FontWeight.w400,
                                   letterSpacing: 0.5,
@@ -238,9 +228,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       );
                     },
                   ),
-                  
+
                   const SizedBox(height: 60),
-                  
+
                   // Animated loading indicator
                   AnimatedBuilder(
                     animation: _textController,
@@ -259,7 +249,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                               width: 24,
                               height: 24,
                               child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                                 strokeWidth: 3,
                               ),
                             ),
@@ -271,7 +263,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 ],
               ),
             ),
-            
+
             // Floating elements
             _buildFloatingElements(),
           ],
@@ -284,9 +276,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     return AnimatedBuilder(
       animation: _particleController,
       builder: (context, child) {
-        return CustomPaint(
-          painter: ParticlePainter(_particleAnimation.value),
-          size: Size.infinite,
+        return Positioned.fill(
+          child: CustomPaint(
+            painter: ParticlePainter(_particleAnimation.value),
+          ),
         );
       },
     );
@@ -327,7 +320,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         final animationValue = (_particleAnimation.value + delay) % 1.0;
         final opacity = (1.0 - animationValue) * 0.6;
         final scale = 0.5 + (animationValue * 0.5);
-        
+
         return Transform.scale(
           scale: scale,
           child: Opacity(
@@ -343,11 +336,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   width: 1,
                 ),
               ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: 20,
-              ),
+              child: Icon(icon, color: Colors.white, size: 20),
             ),
           ),
         );
@@ -358,26 +347,29 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
 class ParticlePainter extends CustomPainter {
   final double animationValue;
-  
+
   ParticlePainter(this.animationValue);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
-      ..style = PaintingStyle.fill;
+    // Skip painting if size is invalid
+    if (size.width <= 0 || size.height <= 0) return;
+
+    final paint =
+        Paint()
+          ..color = Colors.white.withValues(alpha: 0.1)
+          ..style = PaintingStyle.fill;
 
     // Draw floating particles
     for (int i = 0; i < 20; i++) {
       final x = (size.width * (i / 20.0) + animationValue * 100) % size.width;
       final y = size.height * 0.3 + (i * 30.0) % (size.height * 0.4);
       final radius = 2.0 + (i % 3);
-      
-      canvas.drawCircle(
-        Offset(x, y),
-        radius,
-        paint,
-      );
+
+      // Additional safety check for valid coordinates
+      if (x.isFinite && y.isFinite && radius.isFinite) {
+        canvas.drawCircle(Offset(x, y), radius, paint);
+      }
     }
   }
 

@@ -42,18 +42,12 @@ class MainNavigationWrapper extends StatelessWidget {
         onTap: (index) => _onItemTapped(index, context),
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_filled),
-            label: 'Home',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.psychology),
             label: 'Diagnosis',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Patients',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Patients'),
           BottomNavigationBarItem(
             icon: Icon(Icons.analytics),
             label: 'Analytics',
@@ -64,13 +58,16 @@ class MainNavigationWrapper extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'main_fab', // Unique hero tag
-        onPressed: () {
-          context.go('/diagnosis');
-        },
-        child: const Icon(Icons.add),
-      ),
+      // floatingActionButton: Padding(
+      //   padding: const EdgeInsets.only(bottom: 40),
+      //   child: FloatingActionButton(
+      //     heroTag: 'main_fab', // Unique hero tag
+      //     onPressed: () {
+      //       context.go('/diagnosis');
+      //     },
+      //     child: const Icon(Icons.add),
+      //   ),
+      // ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }

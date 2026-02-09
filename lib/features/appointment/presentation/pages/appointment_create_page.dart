@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class AppointmentCreatePage extends StatefulWidget {
   final String patientId;
@@ -104,12 +105,14 @@ class _AppointmentCreatePageState extends State<AppointmentCreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Schedule Appointment'),
+      appBar: AppHeader(
+        title: 'Schedule Appointment',
+        subtitle: 'Book a new appointment for patient',
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: _scheduleAppointment,
+            tooltip: 'Confirm Appointment',
           ),
         ],
       ),

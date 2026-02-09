@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class PrescriptionCreatePage extends StatefulWidget {
   final String patientId;
@@ -233,12 +234,17 @@ class _PrescriptionCreatePageState extends State<PrescriptionCreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Prescription'),
+      appBar: AppHeader(
+        title: 'Create Prescription',
+        subtitle:
+            widget.patientName != null
+                ? 'For ${widget.patientName}'
+                : 'New prescription',
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: _savePrescription,
+            tooltip: 'Save Prescription',
           ),
         ],
       ),

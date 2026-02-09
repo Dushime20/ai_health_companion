@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
@@ -10,8 +11,10 @@ class SettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
+      appBar: AppHeader(
+        title: 'Settings',
+        subtitle: 'Manage your preferences',
+        showBackButton: false,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -37,16 +40,16 @@ class SettingsPage extends ConsumerWidget {
         const SizedBox(height: 12),
         Text(
           'Dr. John Smith',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Text(
           'john.smith@clinic.com',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
         ),
         const SizedBox(height: 16),
         ElevatedButton(
@@ -81,7 +84,10 @@ class SettingsPage extends ConsumerWidget {
           icon: Icons.color_lens,
           title: 'Theme',
           subtitle: 'Switch between light and dark mode',
-          trailing: Switch(value: false, onChanged: (value) {}), // TODO: Implement theme switching
+          trailing: Switch(
+            value: false,
+            onChanged: (value) {},
+          ), // TODO: Implement theme switching
           onTap: () {},
         ),
         _buildSettingsTile(
@@ -110,7 +116,7 @@ class SettingsPage extends ConsumerWidget {
           title: 'About',
           onTap: () {},
         ),
-         const SizedBox(height: 24),
+        const SizedBox(height: 24),
         _buildSettingsTile(
           context,
           icon: Icons.logout,
@@ -123,8 +129,7 @@ class SettingsPage extends ConsumerWidget {
   }
 
   Widget _buildSettingsTile(
-    BuildContext context,
-  {
+    BuildContext context, {
     required IconData icon,
     required String title,
     String? subtitle,
@@ -134,13 +139,20 @@ class SettingsPage extends ConsumerWidget {
   }) {
     return ListTile(
       leading: Icon(icon, color: color ?? AppTheme.primaryColor),
-      title: Text(title, style: TextStyle(color: color, fontWeight: FontWeight.w500)),
-      subtitle: subtitle != null ? Text(subtitle, style: const TextStyle(color: AppTheme.textSecondary)) : null,
+      title: Text(
+        title,
+        style: TextStyle(color: color, fontWeight: FontWeight.w500),
+      ),
+      subtitle:
+          subtitle != null
+              ? Text(
+                subtitle,
+                style: const TextStyle(color: AppTheme.textSecondary),
+              )
+              : null,
       trailing: trailing ?? const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: onTap,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     );
   }
 }

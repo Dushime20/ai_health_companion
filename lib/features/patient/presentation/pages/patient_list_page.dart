@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/patient_card.dart';
 import '../../../../shared/widgets/search_bar_widget.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class PatientListPage extends ConsumerStatefulWidget {
   const PatientListPage({super.key});
@@ -77,16 +78,20 @@ class _PatientListPageState extends ConsumerState<PatientListPage> {
     final filteredPatients = _getFilteredPatients();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Patients'),
+      appBar: AppHeader(
+        title: 'Patients',
+        subtitle: '${filteredPatients.length} patients found',
+        showBackButton: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: _showFilterDialog,
+            tooltip: 'Filter',
           ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () => _showAddPatientDialog(),
+            tooltip: 'Add Patient',
           ),
         ],
       ),
@@ -104,7 +109,7 @@ class _PatientListPageState extends ConsumerState<PatientListPage> {
               },
             ),
           ),
-          
+
           // Filter Chips
           Container(
             height: 50,
@@ -132,9 +137,9 @@ class _PatientListPageState extends ConsumerState<PatientListPage> {
               },
             ),
           ),
-          
+
           const SizedBox(height: 8),
-          
+
           // Patient Count
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -156,29 +161,31 @@ class _PatientListPageState extends ConsumerState<PatientListPage> {
               ],
             ),
           ),
-          
+
           const SizedBox(height: 8),
-          
+
           // Patient List
           Expanded(
-            child: filteredPatients.isEmpty
-                ? _buildEmptyState()
-                : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: filteredPatients.length,
-                    itemBuilder: (context, index) {
-                      final patient = filteredPatients[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: PatientCard(
-                          patient: patient,
-                          onTap: () => context.go('/patient/${patient['id']}'),
-                          onEdit: () => _showEditPatientDialog(patient),
-                          onDelete: () => _showDeletePatientDialog(patient),
-                        ),
-                      );
-                    },
-                  ),
+            child:
+                filteredPatients.isEmpty
+                    ? _buildEmptyState()
+                    : ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: filteredPatients.length,
+                      itemBuilder: (context, index) {
+                        final patient = filteredPatients[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: PatientCard(
+                            patient: patient,
+                            onTap:
+                                () => context.go('/patient/${patient['id']}'),
+                            onEdit: () => _showEditPatientDialog(patient),
+                            onDelete: () => _showDeletePatientDialog(patient),
+                          ),
+                        );
+                      },
+                    ),
           ),
         ],
       ),
@@ -192,17 +199,20 @@ class _PatientListPageState extends ConsumerState<PatientListPage> {
   }
 
   List<Map<String, dynamic>> _getFilteredPatients() {
-    var filtered = _patients.where((patient) {
-      final matchesSearch = patient['name']
-          .toString()
-          .toLowerCase()
-          .contains(_searchQuery.toLowerCase());
-      
-      final matchesFilter = _selectedFilter == 'All' ||
-          patient['status'].toString().toLowerCase() == _selectedFilter.toLowerCase();
-      
-      return matchesSearch && matchesFilter;
-    }).toList();
+    var filtered =
+        _patients.where((patient) {
+          final matchesSearch = patient['name']
+              .toString()
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase());
+
+          final matchesFilter =
+              _selectedFilter == 'All' ||
+              patient['status'].toString().toLowerCase() ==
+                  _selectedFilter.toLowerCase();
+
+          return matchesSearch && matchesFilter;
+        }).toList();
 
     // Sort by last visit date (most recent first)
     filtered.sort((a, b) => b['lastVisit'].compareTo(a['lastVisit']));
@@ -215,24 +225,20 @@ class _PatientListPageState extends ConsumerState<PatientListPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.people_outline,
-            size: 80,
-            color: AppTheme.textSecondary,
-          ),
+          Icon(Icons.people_outline, size: 80, color: AppTheme.textSecondary),
           const SizedBox(height: 16),
           Text(
             'No patients found',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 8),
           Text(
             'Try adjusting your search or filter criteria',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
@@ -248,31 +254,33 @@ class _PatientListPageState extends ConsumerState<PatientListPage> {
   void _showFilterDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Filter Patients'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: _filters.map((filter) {
-            return RadioListTile<String>(
-              title: Text(filter),
-              value: filter,
-              groupValue: _selectedFilter,
-              onChanged: (value) {
-                setState(() {
-                  _selectedFilter = value!;
-                });
-                Navigator.of(context).pop();
-              },
-            );
-          }).toList(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Filter Patients'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children:
+                  _filters.map((filter) {
+                    return RadioListTile<String>(
+                      title: Text(filter),
+                      value: filter,
+                      groupValue: _selectedFilter,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedFilter = value!;
+                        });
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  }).toList(),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -283,59 +291,63 @@ class _PatientListPageState extends ConsumerState<PatientListPage> {
   void _showEditPatientDialog(Map<String, dynamic> patient) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Edit ${patient['name']}'),
-        content: const Text('Patient edit form will be implemented here.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: Text('Edit ${patient['name']}'),
+            content: const Text('Patient edit form will be implemented here.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Patient updated successfully'),
+                      backgroundColor: AppTheme.successColor,
+                    ),
+                  );
+                },
+                child: const Text('Save'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Patient updated successfully'),
-                  backgroundColor: AppTheme.successColor,
-                ),
-              );
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
     );
   }
 
   void _showDeletePatientDialog(Map<String, dynamic> patient) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Patient'),
-        content: Text('Are you sure you want to delete ${patient['name']}?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Patient deleted successfully'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete Patient'),
+            content: Text(
+              'Are you sure you want to delete ${patient['name']}?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Patient deleted successfully'),
+                      backgroundColor: AppTheme.errorColor,
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.errorColor,
                 ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.errorColor,
-            ),
-            child: const Text('Delete'),
+                child: const Text('Delete'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 

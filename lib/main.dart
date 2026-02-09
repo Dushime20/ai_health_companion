@@ -13,6 +13,7 @@ import 'features/diagnosis/presentation/pages/home_page.dart';
 import 'features/patient/presentation/pages/patient_list_page.dart';
 import 'features/patient/presentation/pages/patient_detail_page.dart';
 import 'features/patient/presentation/pages/add_patient_page.dart';
+import 'features/patient/presentation/pages/edit_patient_page.dart';
 import 'features/patient/presentation/pages/patient_medical_history_page.dart';
 import 'features/settings/presentation/pages/settings_page.dart';
 import 'features/settings/presentation/pages/help_support_page.dart';
@@ -24,15 +25,11 @@ import 'shared/widgets/main_navigation_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize Hive for local storage
   await Hive.initFlutter();
-  
-  runApp(
-    const ProviderScope(
-      child: HealthCompanionApp(),
-    ),
-  );
+
+  runApp(const ProviderScope(child: HealthCompanionApp()));
 }
 
 class HealthCompanionApp extends ConsumerWidget {
@@ -52,34 +49,41 @@ class HealthCompanionApp extends ConsumerWidget {
 final GoRouter _router = GoRouter(
   initialLocation: '/',
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const SplashScreen(),
-    ),
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginPage(),
-    ),
+    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
+    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(
       path: '/home',
-      builder: (context, state) => const MainNavigationWrapper(
-        currentIndex: 0,
-        child: HomePage(),
-      ),
+      builder:
+          (context, state) =>
+              const MainNavigationWrapper(currentIndex: 0, child: HomePage()),
     ),
     GoRoute(
       path: '/diagnosis',
-      builder: (context, state) => const MainNavigationWrapper(
-        currentIndex: 1,
-        child: DiagnosisPage(),
-      ),
+      builder:
+          (context, state) => const MainNavigationWrapper(
+            currentIndex: 1,
+            child: DiagnosisPage(),
+          ),
     ),
     GoRoute(
       path: '/patients',
-      builder: (context, state) => const MainNavigationWrapper(
-        currentIndex: 2,
-        child: PatientListPage(),
-      ),
+      builder:
+          (context, state) => const MainNavigationWrapper(
+            currentIndex: 2,
+            child: PatientListPage(),
+          ),
+    ),
+    GoRoute(
+      path: '/patient/add',
+      builder: (context, state) => const AddPatientPage(),
+    ),
+    GoRoute(
+      path: '/patient/:id/edit',
+      builder: (context, state) {
+        final patientId = state.pathParameters['id']!;
+        final patientData = state.extra as Map<String, dynamic>?;
+        return EditPatientPage(patientId: patientId, patientData: patientData);
+      },
     ),
     GoRoute(
       path: '/patient/:id',
@@ -93,24 +97,27 @@ final GoRouter _router = GoRouter(
     ),
     GoRoute(
       path: '/analytics',
-      builder: (context, state) => const MainNavigationWrapper(
-        currentIndex: 3,
-        child: AnalyticsDashboardPage(),
-      ),
+      builder:
+          (context, state) => const MainNavigationWrapper(
+            currentIndex: 3,
+            child: AnalyticsDashboardPage(),
+          ),
     ),
     GoRoute(
       path: '/sync',
-      builder: (context, state) => const MainNavigationWrapper(
-        currentIndex: 3,
-        child: SyncStatusPage(),
-      ),
+      builder:
+          (context, state) => const MainNavigationWrapper(
+            currentIndex: 3,
+            child: SyncStatusPage(),
+          ),
     ),
     GoRoute(
       path: '/settings',
-      builder: (context, state) => const MainNavigationWrapper(
-        currentIndex: 4,
-        child: SettingsPage(),
-      ),
+      builder:
+          (context, state) => const MainNavigationWrapper(
+            currentIndex: 4,
+            child: SettingsPage(),
+          ),
     ),
     GoRoute(
       path: '/diagnosis/result',
@@ -122,10 +129,6 @@ final GoRouter _router = GoRouter(
     GoRoute(
       path: '/diagnosis/history',
       builder: (context, state) => const DiagnosisHistoryPage(),
-    ),
-    GoRoute(
-      path: '/patient/add',
-      builder: (context, state) => const AddPatientPage(),
     ),
     GoRoute(
       path: '/patient/:id/history',

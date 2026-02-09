@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class AddPatientPage extends ConsumerStatefulWidget {
   const AddPatientPage({super.key});
@@ -29,7 +30,16 @@ class _AddPatientPageState extends ConsumerState<AddPatientPage> {
   String? _selectedBloodType;
 
   final List<String> _genders = ['Male', 'Female', 'Other'];
-  final List<String> _bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+  final List<String> _bloodTypes = [
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-',
+  ];
 
   @override
   void dispose() {
@@ -63,12 +73,14 @@ class _AddPatientPageState extends ConsumerState<AddPatientPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add New Patient'),
+      appBar: AppHeader(
+        title: 'Add New Patient',
+        subtitle: 'Register a new patient in the system',
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
             onPressed: _savePatient,
+            tooltip: 'Save Patient',
           ),
         ],
       ),
@@ -84,7 +96,8 @@ class _AddPatientPageState extends ConsumerState<AddPatientPage> {
                 controller: _nameController,
                 label: 'Full Name',
                 icon: Icons.person,
-                validator: (value) => value!.isEmpty ? 'Please enter a name' : null,
+                validator:
+                    (value) => value!.isEmpty ? 'Please enter a name' : null,
               ),
               const SizedBox(height: 16),
               Row(
@@ -110,7 +123,8 @@ class _AddPatientPageState extends ConsumerState<AddPatientPage> {
                           _selectedGender = value;
                         });
                       },
-                      validator: (value) => value == null ? 'Select gender' : null,
+                      validator:
+                          (value) => value == null ? 'Select gender' : null,
                     ),
                   ),
                 ],
@@ -138,17 +152,17 @@ class _AddPatientPageState extends ConsumerState<AddPatientPage> {
               ),
               const SizedBox(height: 24),
               _buildSectionTitle('Medical Information'),
-               _buildDropdownFormField(
-                  value: _selectedBloodType,
-                  label: 'Blood Type',
-                  icon: Icons.bloodtype,
-                  items: _bloodTypes,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedBloodType = value;
-                    });
-                  },
-                ),
+              _buildDropdownFormField(
+                value: _selectedBloodType,
+                label: 'Blood Type',
+                icon: Icons.bloodtype,
+                items: _bloodTypes,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedBloodType = value;
+                  });
+                },
+              ),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -183,7 +197,7 @@ class _AddPatientPageState extends ConsumerState<AddPatientPage> {
                 label: 'Chronic Conditions (comma-separated)',
                 icon: Icons.local_hospital,
               ),
-               const SizedBox(height: 32),
+              const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
@@ -232,15 +246,16 @@ class _AddPatientPageState extends ConsumerState<AddPatientPage> {
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
   }
 
-    Widget _buildDropdownFormField<T>({
+  Widget _buildDropdownFormField<T>({
     required T? value,
     required String label,
     required IconData icon,
@@ -250,21 +265,23 @@ class _AddPatientPageState extends ConsumerState<AddPatientPage> {
   }) {
     return DropdownButtonFormField<T>(
       value: value,
-      items: items.map((T item) {
-        return DropdownMenuItem<T>(
-          value: item,
-          child: Text(item.toString()),
-        );
-      }).toList(),
+      items:
+          items.map((T item) {
+            return DropdownMenuItem<T>(
+              value: item,
+              child: Text(item.toString()),
+            );
+          }).toList(),
       onChanged: onChanged,
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
     );
   }

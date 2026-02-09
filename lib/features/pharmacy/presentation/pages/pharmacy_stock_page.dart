@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class PharmacyStockPage extends StatefulWidget {
   const PharmacyStockPage({super.key});
@@ -110,23 +111,27 @@ class _PharmacyStockPageState extends State<PharmacyStockPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Stock Management'),
-        elevation: 0,
+      appBar: AppHeader(
+        title: 'Stock Management',
+        subtitle: 'Monitor medication inventory',
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {},
+            tooltip: 'Add Stock',
+          ),
+        ],
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'Overview'),
-            Tab(text: 'Alerts'),
-          ],
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
+          tabs: const [Tab(text: 'Overview'), Tab(text: 'Alerts')],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [
-          _buildOverviewTab(),
-          _buildAlertsTab(),
-        ],
+        children: [_buildOverviewTab(), _buildAlertsTab()],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _refreshStock,
@@ -202,81 +207,85 @@ class _PharmacyStockPageState extends State<PharmacyStockPage>
 
         // Stock List
         Expanded(
-          child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _filteredStock.length,
-                  itemBuilder: (context, index) {
-                    final item = _filteredStock[index];
-                    return _buildStockCard(item);
-                  },
-                ),
+          child:
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _filteredStock.length,
+                    itemBuilder: (context, index) {
+                      final item = _filteredStock[index];
+                      return _buildStockCard(item);
+                    },
+                  ),
         ),
       ],
     );
   }
 
   Widget _buildAlertsTab() {
-    final alerts = _stockData.where((item) {
-      return item['totalStock'] < item['lowStockThreshold'];
-    }).toList();
+    final alerts =
+        _stockData.where((item) {
+          return item['totalStock'] < item['lowStockThreshold'];
+        }).toList();
 
     return alerts.isEmpty
         ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.check_circle, size: 80, color: Colors.green[300]),
-                const SizedBox(height: 16),
-                const Text(
-                  'No Stock Alerts',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'All medications are adequately stocked',
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          )
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.check_circle, size: 80, color: Colors.green[300]),
+              const SizedBox(height: 16),
+              const Text(
+                'No Stock Alerts',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'All medications are adequately stocked',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+            ],
+          ),
+        )
         : ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: alerts.length,
-            itemBuilder: (context, index) {
-              final item = alerts[index];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 12),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.red[100],
-                    child: Icon(Icons.warning, color: Colors.red[700]),
-                  ),
-                  title: Text(
-                    item['name'],
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    'Total Stock: ${item['totalStock']} units\nThreshold: ${item['lowStockThreshold']} units',
-                  ),
-                  trailing: ElevatedButton(
-                    onPressed: () {
-                      _showReorderDialog(item);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                    ),
-                    child: const Text('Reorder'),
-                  ),
+          padding: const EdgeInsets.all(16),
+          itemCount: alerts.length,
+          itemBuilder: (context, index) {
+            final item = alerts[index];
+            return Card(
+              margin: const EdgeInsets.only(bottom: 12),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Colors.red[100],
+                  child: Icon(Icons.warning, color: Colors.red[700]),
                 ),
-              );
-            },
-          );
+                title: Text(
+                  item['name'],
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  'Total Stock: ${item['totalStock']} units\nThreshold: ${item['lowStockThreshold']} units',
+                ),
+                trailing: ElevatedButton(
+                  onPressed: () {
+                    _showReorderDialog(item);
+                  },
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  child: const Text('Reorder'),
+                ),
+              ),
+            );
+          },
+        );
   }
 
   Widget _buildSummaryCard(
-      String title, String value, IconData icon, Color color) {
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Card(
       elevation: 2,
       child: Padding(
@@ -296,10 +305,7 @@ class _PharmacyStockPageState extends State<PharmacyStockPage>
             const SizedBox(height: 4),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
           ],
@@ -319,9 +325,8 @@ class _PharmacyStockPageState extends State<PharmacyStockPage>
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ExpansionTile(
         leading: CircleAvatar(
-          backgroundColor: totalStock < threshold
-              ? Colors.red[100]
-              : Colors.green[100],
+          backgroundColor:
+              totalStock < threshold ? Colors.red[100] : Colors.green[100],
           child: Icon(
             Icons.medication,
             color: totalStock < threshold ? Colors.red[700] : Colors.green[700],
@@ -364,47 +369,40 @@ class _PharmacyStockPageState extends State<PharmacyStockPage>
               children: [
                 const Text(
                   'Stock by Location',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 12),
-                ...List.generate(
-                  (item['locations'] as List).length,
-                  (index) {
-                    final location = item['locations'][index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(location['name']),
+                ...List.generate((item['locations'] as List).length, (index) {
+                  final location = item['locations'][index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      children: [
+                        Expanded(child: Text(location['name'])),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: _getStockStatusColor(location['status'])
-                                  .withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              '${location['stock']} units',
-                              style: TextStyle(
-                                color: _getStockStatusColor(location['status']),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
-                              ),
+                          decoration: BoxDecoration(
+                            color: _getStockStatusColor(
+                              location['status'],
+                            ).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${location['stock']} units',
+                            style: TextStyle(
+                              color: _getStockStatusColor(location['status']),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
               ],
             ),
           ),
@@ -445,30 +443,31 @@ class _PharmacyStockPageState extends State<PharmacyStockPage>
   void _showReorderDialog(Map<String, dynamic> item) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Reorder Medication'),
-        content: Text(
-          'Would you like to create a reorder request for ${item['name']}?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Reorder Medication'),
+            content: Text(
+              'Would you like to create a reorder request for ${item['name']}?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Reorder request submitted'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                },
+                child: const Text('Submit Request'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Reorder request submitted'),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            },
-            child: const Text('Submit Request'),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class HelpSupportPage extends ConsumerStatefulWidget {
   const HelpSupportPage({super.key});
@@ -16,7 +16,7 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _slideAnimation;
-  
+
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -24,42 +24,50 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
   final List<Map<String, dynamic>> _faqItems = [
     {
       'question': 'How does AI diagnosis work?',
-      'answer': 'The AI diagnosis feature uses machine learning models trained on medical data to analyze symptoms, vital signs, and patient information to provide probable disease predictions with confidence scores.',
+      'answer':
+          'The AI diagnosis feature uses machine learning models trained on medical data to analyze symptoms, vital signs, and patient information to provide probable disease predictions with confidence scores.',
       'category': 'AI Diagnosis',
     },
     {
       'question': 'Can I use the app offline?',
-      'answer': 'Yes! The app is designed to work offline. All patient data and AI models are stored locally on your device. Data will automatically sync when you\'re back online.',
+      'answer':
+          'Yes! The app is designed to work offline. All patient data and AI models are stored locally on your device. Data will automatically sync when you\'re back online.',
       'category': 'Offline Mode',
     },
     {
       'question': 'How do I add a new patient?',
-      'answer': 'Go to the Patients tab and tap the "+" button or "Add Patient" button. Fill out the patient information form with personal, medical, and contact details.',
+      'answer':
+          'Go to the Patients tab and tap the "+" button or "Add Patient" button. Fill out the patient information form with personal, medical, and contact details.',
       'category': 'Patient Management',
     },
     {
       'question': 'Is my data secure?',
-      'answer': 'Yes, all patient data is encrypted and stored securely. The app complies with healthcare privacy standards and uses end-to-end encryption.',
+      'answer':
+          'Yes, all patient data is encrypted and stored securely. The app complies with healthcare privacy standards and uses end-to-end encryption.',
       'category': 'Security',
     },
     {
       'question': 'How do I sync my data?',
-      'answer': 'Data syncs automatically when you have an internet connection. You can also manually sync by going to the Sync Status page and tapping "Sync Now".',
+      'answer':
+          'Data syncs automatically when you have an internet connection. You can also manually sync by going to the Sync Status page and tapping "Sync Now".',
       'category': 'Data Sync',
     },
     {
       'question': 'Can I export patient reports?',
-      'answer': 'Yes, you can export diagnosis reports and patient data. Use the export button in the diagnosis results or patient details pages.',
+      'answer':
+          'Yes, you can export diagnosis reports and patient data. Use the export button in the diagnosis results or patient details pages.',
       'category': 'Reports',
     },
     {
       'question': 'What if the AI diagnosis is wrong?',
-      'answer': 'The AI provides suggestions based on symptoms, but always consult with qualified healthcare professionals for final diagnosis and treatment decisions.',
+      'answer':
+          'The AI provides suggestions based on symptoms, but always consult with qualified healthcare professionals for final diagnosis and treatment decisions.',
       'category': 'AI Diagnosis',
     },
     {
       'question': 'How do I update patient information?',
-      'answer': 'Go to the patient\'s detail page and tap the edit button. You can update any patient information including medical history and contact details.',
+      'answer':
+          'Go to the patient\'s detail page and tap the edit button. You can update any patient information including medical history and contact details.',
       'category': 'Patient Management',
     },
   ];
@@ -110,22 +118,20 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
-    ));
-    
-    _slideAnimation = Tween<double>(
-      begin: 50.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
-    ));
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
+      ),
+    );
+
+    _slideAnimation = Tween<double>(begin: 50.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
+      ),
+    );
   }
 
   void _startAnimations() {
@@ -144,14 +150,14 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Help & Support'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+      appBar: AppHeader(
+        title: 'Help & Support',
+        subtitle: 'Get help and learn more',
         actions: [
           IconButton(
             icon: const Icon(Icons.contact_support),
             onPressed: _contactSupport,
+            tooltip: 'Contact Support',
           ),
         ],
         bottom: TabBar(
@@ -186,11 +192,18 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
   }
 
   Widget _buildFAQTab() {
-    final filteredFAQs = _faqItems.where((faq) {
-      return faq['question'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
-             faq['answer'].toLowerCase().contains(_searchQuery.toLowerCase()) ||
-             faq['category'].toLowerCase().contains(_searchQuery.toLowerCase());
-    }).toList();
+    final filteredFAQs =
+        _faqItems.where((faq) {
+          return faq['question'].toLowerCase().contains(
+                _searchQuery.toLowerCase(),
+              ) ||
+              faq['answer'].toLowerCase().contains(
+                _searchQuery.toLowerCase(),
+              ) ||
+              faq['category'].toLowerCase().contains(
+                _searchQuery.toLowerCase(),
+              );
+        }).toList();
 
     return Column(
       children: [
@@ -207,17 +220,18 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
             decoration: InputDecoration(
               hintText: 'Search FAQ...',
               prefixIcon: const Icon(Icons.search),
-              suffixIcon: _searchQuery.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() {
-                          _searchQuery = '';
-                        });
-                      },
-                    )
-                  : null,
+              suffixIcon:
+                  _searchQuery.isNotEmpty
+                      ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() {
+                            _searchQuery = '';
+                          });
+                        },
+                      )
+                      : null,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -226,22 +240,23 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
             ),
           ),
         ),
-        
+
         // FAQ List
         Expanded(
-          child: filteredFAQs.isEmpty
-              ? _buildEmptyState('No FAQ items found')
-              : ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: filteredFAQs.length,
-                  itemBuilder: (context, index) {
-                    final faq = filteredFAQs[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: _buildFAQCard(faq),
-                    );
-                  },
-                ),
+          child:
+              filteredFAQs.isEmpty
+                  ? _buildEmptyState('No FAQ items found')
+                  : ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: filteredFAQs.length,
+                    itemBuilder: (context, index) {
+                      final faq = filteredFAQs[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _buildFAQCard(faq),
+                      );
+                    },
+                  ),
         ),
       ],
     );
@@ -250,15 +265,13 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
   Widget _buildFAQCard(Map<String, dynamic> faq) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: ExpansionTile(
         title: Text(
           faq['question'],
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: Padding(
           padding: const EdgeInsets.only(top: 4),
@@ -302,19 +315,19 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
         children: [
           Text(
             'Interactive Tutorials',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           Text(
             'Learn how to use the app with step-by-step guides',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 24),
-          
+
           ..._tutorialSteps.map((tutorial) {
             return Padding(
               padding: const EdgeInsets.only(bottom: 16),
@@ -329,9 +342,7 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
   Widget _buildTutorialCard(Map<String, dynamic> tutorial) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: () => _startTutorial(tutorial),
         borderRadius: BorderRadius.circular(16),
@@ -372,11 +383,7 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
                   ],
                 ),
               ),
-              Icon(
-                Icons.play_arrow,
-                color: tutorial['color'],
-                size: 24,
-              ),
+              Icon(Icons.play_arrow, color: tutorial['color'], size: 24),
             ],
           ),
         ),
@@ -392,19 +399,19 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
         children: [
           Text(
             'Get Support',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           Text(
             'Need help? Contact our support team',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 24),
-          
+
           // Contact Methods
           _buildContactMethod(
             'Email Support',
@@ -413,9 +420,9 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
             AppTheme.primaryColor,
             () => _sendEmail(),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           _buildContactMethod(
             'Phone Support',
             'Call our support line for immediate assistance',
@@ -423,9 +430,9 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
             AppTheme.successColor,
             () => _makePhoneCall(),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           _buildContactMethod(
             'Live Chat',
             'Chat with our support team in real-time',
@@ -433,14 +440,14 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
             AppTheme.accentColor,
             () => _startLiveChat(),
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Support Hours
           _buildSupportHours(),
-          
+
           const SizedBox(height: 24),
-          
+
           // Report Issue
           _buildReportIssue(),
         ],
@@ -457,9 +464,7 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
   ) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(16),
@@ -473,11 +478,7 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(
-                  icon,
-                  color: color,
-                  size: 24,
-                ),
+                child: Icon(icon, color: color, size: 24),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -525,22 +526,18 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
         children: [
           Row(
             children: [
-              Icon(
-                Icons.schedule,
-                color: AppTheme.primaryColor,
-                size: 20,
-              ),
+              Icon(Icons.schedule, color: AppTheme.primaryColor, size: 20),
               const SizedBox(width: 8),
               Text(
                 'Support Hours',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          
+
           _buildHoursRow('Monday - Friday', '9:00 AM - 6:00 PM'),
           _buildHoursRow('Saturday', '10:00 AM - 4:00 PM'),
           _buildHoursRow('Sunday', 'Closed'),
@@ -558,15 +555,15 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
         children: [
           Text(
             day,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
           ),
           Text(
             hours,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
           ),
         ],
       ),
@@ -579,20 +576,14 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
       decoration: BoxDecoration(
         color: AppTheme.errorColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppTheme.errorColor.withOpacity(0.3),
-        ),
+        border: Border.all(color: AppTheme.errorColor.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                Icons.bug_report,
-                color: AppTheme.errorColor,
-                size: 20,
-              ),
+              Icon(Icons.bug_report, color: AppTheme.errorColor, size: 20),
               const SizedBox(width: 8),
               Text(
                 'Report an Issue',
@@ -606,9 +597,9 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
           const SizedBox(height: 8),
           Text(
             'Found a bug or experiencing issues? Report it to help us improve the app.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -637,17 +628,13 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
         padding: const EdgeInsets.all(40),
         child: Column(
           children: [
-            Icon(
-              Icons.search_off,
-              size: 60,
-              color: AppTheme.textSecondary,
-            ),
+            Icon(Icons.search_off, size: 60, color: AppTheme.textSecondary),
             const SizedBox(height: 16),
             Text(
               message,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(color: AppTheme.textSecondary),
             ),
           ],
         ),
@@ -658,58 +645,66 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
   void _startTutorial(Map<String, dynamic> tutorial) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('${tutorial['title']} Tutorial'),
-        content: Text('Interactive tutorial for "${tutorial['title']}" will be implemented here.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+      builder:
+          (context) => AlertDialog(
+            title: Text('${tutorial['title']} Tutorial'),
+            content: Text(
+              'Interactive tutorial for "${tutorial['title']}" will be implemented here.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Starting ${tutorial['title']} tutorial...',
+                      ),
+                      backgroundColor: tutorial['color'],
+                    ),
+                  );
+                },
+                child: const Text('Start Tutorial'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Starting ${tutorial['title']} tutorial...'),
-                  backgroundColor: tutorial['color'],
-                ),
-              );
-            },
-            child: const Text('Start Tutorial'),
-          ),
-        ],
-      ),
     );
   }
 
   void _contactSupport() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Contact Support'),
-        content: const Text('How would you like to contact our support team?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Contact Support'),
+            content: const Text(
+              'How would you like to contact our support team?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _sendEmail();
+                },
+                child: const Text('Email'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _makePhoneCall();
+                },
+                child: const Text('Call'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _sendEmail();
-            },
-            child: const Text('Email'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _makePhoneCall();
-            },
-            child: const Text('Call'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -743,28 +738,31 @@ class _HelpSupportPageState extends ConsumerState<HelpSupportPage>
   void _reportIssue() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Report Issue'),
-        content: const Text('Issue reporting form will be implemented here.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Report Issue'),
+            content: const Text(
+              'Issue reporting form will be implemented here.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Issue reported successfully'),
+                      backgroundColor: AppTheme.successColor,
+                    ),
+                  );
+                },
+                child: const Text('Submit'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Issue reported successfully'),
-                  backgroundColor: AppTheme.successColor,
-                ),
-              );
-            },
-            child: const Text('Submit'),
-          ),
-        ],
-      ),
     );
   }
 }

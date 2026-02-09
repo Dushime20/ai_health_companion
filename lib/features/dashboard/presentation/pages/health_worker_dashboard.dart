@@ -3,6 +3,7 @@ import '../../../../core/models/user_model.dart';
 import '../../../../core/constants/user_roles.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/quick_action_button.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class HealthWorkerDashboard extends StatefulWidget {
   final UserModel user;
@@ -84,29 +85,23 @@ class _HealthWorkerDashboardState extends State<HealthWorkerDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Health Worker Dashboard'),
-            Text(
-              widget.user.clinicName ?? 'Clinic',
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-          ],
-        ),
+      appBar: AppHeader(
+        title: 'Health Worker Dashboard',
+        subtitle: widget.user.clinicName ?? 'Clinic',
+        showBackButton: false,
         actions: [
-          IconButton(icon: const Icon(Icons.notifications), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {},
+            tooltip: 'Notifications',
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: CircleAvatar(
-              backgroundColor: AppTheme.primaryColor,
+              backgroundColor: Colors.white,
               child: Text(
                 widget.user.initials,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: AppTheme.primaryColor),
               ),
             ),
           ),

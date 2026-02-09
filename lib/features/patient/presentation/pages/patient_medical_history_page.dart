@@ -2,27 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class PatientMedicalHistoryPage extends ConsumerStatefulWidget {
   final String patientId;
-  
-  const PatientMedicalHistoryPage({
-    super.key,
-    required this.patientId,
-  });
+
+  const PatientMedicalHistoryPage({super.key, required this.patientId});
 
   @override
-  ConsumerState<PatientMedicalHistoryPage> createState() => _PatientMedicalHistoryPageState();
+  ConsumerState<PatientMedicalHistoryPage> createState() =>
+      _PatientMedicalHistoryPageState();
 }
 
-class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistoryPage>
+class _PatientMedicalHistoryPageState
+    extends ConsumerState<PatientMedicalHistoryPage>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _slideAnimation;
-  
+
   late TabController _tabController;
-  
+
   // Mock patient data
   final Map<String, dynamic> _patient = {
     'id': 'P001',
@@ -107,22 +107,20 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
-    ));
-    
-    _slideAnimation = Tween<double>(
-      begin: 50.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
-    ));
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
+      ),
+    );
+
+    _slideAnimation = Tween<double>(begin: 50.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
+      ),
+    );
   }
 
   void _startAnimations() {
@@ -140,22 +138,26 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: Text('${_patient['name']} - Medical History'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+      appBar: AppHeader(
+        title: '${_patient['name']} - Medical History',
+        subtitle: 'Patient ID: ${widget.patientId}',
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: _addNewEntry,
+            tooltip: 'Add Entry',
           ),
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: _exportHistory,
+            tooltip: 'Export',
           ),
         ],
         bottom: TabBar(
           controller: _tabController,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
+          indicatorColor: Colors.white,
           tabs: const [
             Tab(text: 'Timeline', icon: Icon(Icons.timeline)),
             Tab(text: 'Medications', icon: Icon(Icons.medication)),
@@ -193,30 +195,30 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
         children: [
           // Patient Summary Card
           _buildPatientSummaryCard(),
-          
+
           const SizedBox(height: 24),
-          
+
           // Timeline Header
           Row(
             children: [
               Text(
                 'Medical Timeline',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
               ),
               const Spacer(),
               Text(
                 '${_medicalHistory.length} entries',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppTheme.textSecondary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.copyWith(color: AppTheme.textSecondary),
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Timeline
           _buildTimeline(),
         ],
@@ -277,20 +279,32 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
               ),
             ],
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Quick Stats
           Row(
             children: [
               Expanded(
-                child: _buildQuickStat('Blood Type', _patient['bloodType'], Icons.bloodtype),
+                child: _buildQuickStat(
+                  'Blood Type',
+                  _patient['bloodType'],
+                  Icons.bloodtype,
+                ),
               ),
               Expanded(
-                child: _buildQuickStat('Allergies', '${_patient['allergies'].length}', Icons.warning),
+                child: _buildQuickStat(
+                  'Allergies',
+                  '${_patient['allergies'].length}',
+                  Icons.warning,
+                ),
               ),
               Expanded(
-                child: _buildQuickStat('Medications', '${_patient['currentMedications'].length}', Icons.medication),
+                child: _buildQuickStat(
+                  'Medications',
+                  '${_patient['currentMedications'].length}',
+                  Icons.medication,
+                ),
               ),
             ],
           ),
@@ -302,11 +316,7 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
   Widget _buildQuickStat(String label, String value, IconData icon) {
     return Column(
       children: [
-        Icon(
-          icon,
-          color: Colors.white.withOpacity(0.8),
-          size: 20,
-        ),
+        Icon(icon, color: Colors.white.withOpacity(0.8), size: 20),
         const SizedBox(height: 4),
         Text(
           value,
@@ -317,9 +327,9 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
         ),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: Colors.white.withOpacity(0.8),
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: Colors.white.withOpacity(0.8)),
         ),
       ],
     );
@@ -327,12 +337,13 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
 
   Widget _buildTimeline() {
     return Column(
-      children: _medicalHistory.map((entry) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 16),
-          child: _buildTimelineEntry(entry),
-        );
-      }).toList(),
+      children:
+          _medicalHistory.map((entry) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: _buildTimelineEntry(entry),
+            );
+          }).toList(),
     );
   }
 
@@ -399,15 +410,15 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
               ),
             ],
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           // Description
           Text(
             entry['description'],
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-          
+
           if (entry['provider'] != null) ...[
             const SizedBox(height: 8),
             Row(
@@ -427,39 +438,44 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
               ],
             ),
           ],
-          
-          if (entry['medications'] != null && (entry['medications'] as List).isNotEmpty) ...[
+
+          if (entry['medications'] != null &&
+              (entry['medications'] as List).isNotEmpty) ...[
             const SizedBox(height: 12),
             Text(
               'Medications:',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 4),
             Wrap(
               spacing: 8,
               runSpacing: 4,
-              children: (entry['medications'] as List<String>).map((med) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    med,
-                    style: TextStyle(
-                      color: AppTheme.primaryColor,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 12,
-                    ),
-                  ),
-                );
-              }).toList(),
+              children:
+                  (entry['medications'] as List<String>).map((med) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        med,
+                        style: TextStyle(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        ),
+                      ),
+                    );
+                  }).toList(),
             ),
           ],
-          
+
           if (entry['results'] != null) ...[
             const SizedBox(height: 12),
             Container(
@@ -486,21 +502,21 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
               ),
             ),
           ],
-          
+
           if (entry['notes'] != null) ...[
             const SizedBox(height: 12),
             Text(
               'Notes:',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 4),
             Text(
               entry['notes'],
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
             ),
           ],
         ],
@@ -510,12 +526,13 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
 
   Widget _buildMedicationsTab() {
     final currentMeds = _patient['currentMedications'] as List<String>;
-    final historicalMeds = _medicalHistory
-        .where((entry) => entry['medications'] != null)
-        .expand((entry) => entry['medications'] as List<String>)
-        .toSet()
-        .toList();
-    
+    final historicalMeds =
+        _medicalHistory
+            .where((entry) => entry['medications'] != null)
+            .expand((entry) => entry['medications'] as List<String>)
+            .toSet()
+            .toList();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -524,28 +541,28 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
           // Current Medications
           Text(
             'Current Medications',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 16),
-          
+
           if (currentMeds.isEmpty)
             _buildEmptyState('No current medications')
           else
             ...currentMeds.map((med) => _buildMedicationCard(med, true)),
-          
+
           const SizedBox(height: 24),
-          
+
           // Medication History
           Text(
             'Medication History',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 16),
-          
+
           if (historicalMeds.isEmpty)
             _buildEmptyState('No medication history')
           else
@@ -563,18 +580,20 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: AppTheme.softShadow,
-        border: isCurrent 
-            ? Border.all(color: AppTheme.successColor, width: 2)
-            : null,
+        border:
+            isCurrent
+                ? Border.all(color: AppTheme.successColor, width: 2)
+                : null,
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: isCurrent 
-                  ? AppTheme.successColor.withOpacity(0.1)
-                  : AppTheme.textSecondary.withOpacity(0.1),
+              color:
+                  isCurrent
+                      ? AppTheme.successColor.withOpacity(0.1)
+                      : AppTheme.textSecondary.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -625,8 +644,9 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
   }
 
   Widget _buildLabResultsTab() {
-    final labResults = _medicalHistory.where((entry) => entry['type'] == 'Lab Test').toList();
-    
+    final labResults =
+        _medicalHistory.where((entry) => entry['type'] == 'Lab Test').toList();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -634,12 +654,12 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
         children: [
           Text(
             'Lab Results',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 16),
-          
+
           if (labResults.isEmpty)
             _buildEmptyState('No lab results available')
           else
@@ -712,14 +732,14 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
               ),
             ],
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           Text(
             result['description'],
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-          
+
           if (result['results'] != null) ...[
             const SizedBox(height: 12),
             Container(
@@ -746,21 +766,21 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
               ),
             ),
           ],
-          
+
           if (result['notes'] != null) ...[
             const SizedBox(height: 12),
             Text(
               'Notes:',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 4),
             Text(
               result['notes'],
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
             ),
           ],
         ],
@@ -774,17 +794,13 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
         padding: const EdgeInsets.all(40),
         child: Column(
           children: [
-            Icon(
-              Icons.inbox_outlined,
-              size: 60,
-              color: AppTheme.textSecondary,
-            ),
+            Icon(Icons.inbox_outlined, size: 60, color: AppTheme.textSecondary),
             const SizedBox(height: 16),
             Text(
               message,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(color: AppTheme.textSecondary),
             ),
           ],
         ),
@@ -836,28 +852,31 @@ class _PatientMedicalHistoryPageState extends ConsumerState<PatientMedicalHistor
   void _addNewEntry() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add New Entry'),
-        content: const Text('Add new medical history entry form will be implemented here.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Add New Entry'),
+            content: const Text(
+              'Add new medical history entry form will be implemented here.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('New entry added successfully'),
+                      backgroundColor: AppTheme.successColor,
+                    ),
+                  );
+                },
+                child: const Text('Add'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('New entry added successfully'),
-                  backgroundColor: AppTheme.successColor,
-                ),
-              );
-            },
-            child: const Text('Add'),
-          ),
-        ],
-      ),
     );
   }
 

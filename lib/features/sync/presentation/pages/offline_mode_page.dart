@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class OfflineModePage extends ConsumerStatefulWidget {
   const OfflineModePage({super.key});
@@ -16,7 +17,7 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
   late Animation<double> _fadeAnimation;
   late Animation<double> _slideAnimation;
   late Animation<double> _pulseAnimation;
-  
+
   bool _isOnline = false;
   int _offlineRecords = 15;
   int _syncedRecords = 1247;
@@ -33,30 +34,24 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-    
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
-    ));
-    
-    _slideAnimation = Tween<double>(
-      begin: 50.0,
-      end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
-    ));
-    
-    _pulseAnimation = Tween<double>(
-      begin: 1.0,
-      end: 1.1,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.0, 0.8, curve: Curves.easeIn),
+      ),
+    );
+
+    _slideAnimation = Tween<double>(begin: 50.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.2, 1.0, curve: Curves.easeOut),
+      ),
+    );
+
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
   }
 
   void _startAnimations() {
@@ -73,10 +68,9 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Offline Mode'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+      appBar: AppHeader(
+        title: 'Offline Mode',
+        subtitle: '$_offlineRecords records pending sync',
         actions: [
           IconButton(
             icon: Icon(_isOnline ? Icons.cloud_done : Icons.cloud_off),
@@ -98,24 +92,24 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
                   children: [
                     // Status Card
                     _buildStatusCard(),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Offline Capabilities
                     _buildOfflineCapabilities(),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Data Management
                     _buildDataManagement(),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Sync Information
                     _buildSyncInformation(),
-                    
+
                     const SizedBox(height: 24),
-                    
+
                     // Action Buttons
                     _buildActionButtons(),
                   ],
@@ -132,17 +126,18 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: _isOnline 
-            ? const LinearGradient(
-                colors: [AppTheme.successColor, Color(0xFF66BB6A)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : const LinearGradient(
-                colors: [AppTheme.warningColor, Color(0xFFFFB74D)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+        gradient:
+            _isOnline
+                ? const LinearGradient(
+                  colors: [AppTheme.successColor, Color(0xFF66BB6A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+                : const LinearGradient(
+                  colors: [AppTheme.warningColor, Color(0xFFFFB74D)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: AppTheme.mediumShadow,
       ),
@@ -169,7 +164,10 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
                   ),
                   child: Icon(
                     _isOnline ? Icons.cloud_done : Icons.cloud_off,
-                    color: _isOnline ? AppTheme.successColor : AppTheme.warningColor,
+                    color:
+                        _isOnline
+                            ? AppTheme.successColor
+                            : AppTheme.warningColor,
                     size: 40,
                   ),
                 ),
@@ -186,7 +184,7 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
           ),
           const SizedBox(height: 8),
           Text(
-            _isOnline 
+            _isOnline
                 ? 'All features available with cloud sync'
                 : 'Working offline - data will sync when online',
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -205,12 +203,12 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
       children: [
         Text(
           'Offline Capabilities',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 16),
-        
+
         _buildCapabilityCard(
           'AI Diagnosis',
           'Perform disease diagnosis using on-device AI model',
@@ -218,9 +216,9 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
           AppTheme.primaryColor,
           true,
         ),
-        
+
         const SizedBox(height: 12),
-        
+
         _buildCapabilityCard(
           'Patient Records',
           'View and manage patient information locally',
@@ -228,9 +226,9 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
           AppTheme.secondaryColor,
           true,
         ),
-        
+
         const SizedBox(height: 12),
-        
+
         _buildCapabilityCard(
           'Medical History',
           'Access complete patient medical timeline',
@@ -238,9 +236,9 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
           AppTheme.accentColor,
           true,
         ),
-        
+
         const SizedBox(height: 12),
-        
+
         _buildCapabilityCard(
           'Data Storage',
           'All data stored securely on device',
@@ -266,7 +264,10 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
         borderRadius: BorderRadius.circular(16),
         boxShadow: AppTheme.softShadow,
         border: Border.all(
-          color: isAvailable ? color.withOpacity(0.3) : AppTheme.textDisabled.withOpacity(0.3),
+          color:
+              isAvailable
+                  ? color.withOpacity(0.3)
+                  : AppTheme.textDisabled.withOpacity(0.3),
         ),
       ),
       child: Row(
@@ -274,9 +275,10 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: isAvailable 
-                  ? color.withOpacity(0.1)
-                  : AppTheme.textDisabled.withOpacity(0.1),
+              color:
+                  isAvailable
+                      ? color.withOpacity(0.1)
+                      : AppTheme.textDisabled.withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
@@ -323,12 +325,12 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
       children: [
         Text(
           'Data Management',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 16),
-        
+
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -338,14 +340,25 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
           ),
           child: Column(
             children: [
-              _buildDataRow('Offline Records', _offlineRecords.toString(), AppTheme.warningColor),
+              _buildDataRow(
+                'Offline Records',
+                _offlineRecords.toString(),
+                AppTheme.warningColor,
+              ),
               const Divider(),
-              _buildDataRow('Synced Records', _syncedRecords.toString(), AppTheme.successColor),
+              _buildDataRow(
+                'Synced Records',
+                _syncedRecords.toString(),
+                AppTheme.successColor,
+              ),
               const Divider(),
               _buildDataRow('Storage Used', '2.3 GB', AppTheme.primaryColor),
               const Divider(),
-              _buildDataRow('Last Sync', _isOnline ? 'Just now' : '2 hours ago', 
-                  _isOnline ? AppTheme.successColor : AppTheme.warningColor),
+              _buildDataRow(
+                'Last Sync',
+                _isOnline ? 'Just now' : '2 hours ago',
+                _isOnline ? AppTheme.successColor : AppTheme.warningColor,
+              ),
             ],
           ),
         ),
@@ -361,9 +374,9 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
         children: [
           Text(
             label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
           ),
           Text(
             value,
@@ -383,12 +396,12 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
       children: [
         Text(
           'Sync Information',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 16),
-        
+
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -416,34 +429,34 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
                 ],
               ),
               const SizedBox(height: 16),
-              
+
               _buildSyncStep(
                 '1',
                 'Data Collection',
                 'All patient data and diagnoses are stored locally on your device',
                 Icons.storage,
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               _buildSyncStep(
                 '2',
                 'Automatic Sync',
                 'When internet connection is available, data syncs automatically',
                 Icons.sync,
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               _buildSyncStep(
                 '3',
                 'Conflict Resolution',
                 'Smart algorithms handle data conflicts and ensure data integrity',
                 Icons.merge,
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               _buildSyncStep(
                 '4',
                 'Backup & Security',
@@ -457,7 +470,12 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
     );
   }
 
-  Widget _buildSyncStep(String number, String title, String description, IconData icon) {
+  Widget _buildSyncStep(
+    String number,
+    String title,
+    String description,
+    IconData icon,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -486,11 +504,7 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
             children: [
               Row(
                 children: [
-                  Icon(
-                    icon,
-                    color: AppTheme.primaryColor,
-                    size: 16,
-                  ),
+                  Icon(icon, color: AppTheme.primaryColor, size: 16),
                   const SizedBox(width: 8),
                   Text(
                     title,
@@ -503,9 +517,9 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
               const SizedBox(height: 4),
               Text(
                 description,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppTheme.textSecondary,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
               ),
             ],
           ),
@@ -522,7 +536,8 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
           child: ElevatedButton.icon(
             onPressed: _isOnline ? _goOffline : _goOnline,
             style: ElevatedButton.styleFrom(
-              backgroundColor: _isOnline ? AppTheme.warningColor : AppTheme.successColor,
+              backgroundColor:
+                  _isOnline ? AppTheme.warningColor : AppTheme.successColor,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
@@ -532,15 +547,13 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
             icon: Icon(_isOnline ? Icons.cloud_off : Icons.cloud_done),
             label: Text(
               _isOnline ? 'Switch to Offline Mode' : 'Switch to Online Mode',
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
         ),
-        
+
         const SizedBox(height: 12),
-        
+
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
@@ -556,15 +569,13 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
             icon: const Icon(Icons.sync),
             label: const Text(
               'Force Sync Now',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
         ),
-        
+
         const SizedBox(height: 12),
-        
+
         SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
@@ -580,9 +591,7 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
             icon: const Icon(Icons.settings),
             label: const Text(
               'Sync Settings',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -594,15 +603,14 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
     setState(() {
       _isOnline = !_isOnline;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          _isOnline 
-              ? 'Switched to online mode'
-              : 'Switched to offline mode',
+          _isOnline ? 'Switched to online mode' : 'Switched to offline mode',
         ),
-        backgroundColor: _isOnline ? AppTheme.successColor : AppTheme.warningColor,
+        backgroundColor:
+            _isOnline ? AppTheme.successColor : AppTheme.warningColor,
       ),
     );
   }
@@ -611,7 +619,7 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
     setState(() {
       _isOnline = false;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Switched to offline mode'),
@@ -624,7 +632,7 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
     setState(() {
       _isOnline = true;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Switched to online mode'),
@@ -640,14 +648,14 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
         backgroundColor: AppTheme.primaryColor,
       ),
     );
-    
+
     // Simulate sync process
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _syncedRecords += _offlineRecords;
         _offlineRecords = 0;
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Sync completed successfully'),
@@ -660,16 +668,17 @@ class _OfflineModePageState extends ConsumerState<OfflineModePage>
   void _showSyncSettings() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Sync Settings'),
-        content: const Text('Sync settings will be implemented here.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Sync Settings'),
+            content: const Text('Sync settings will be implemented here.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/constants/user_roles.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_header.dart';
 
 class ClinicStaffDashboard extends StatefulWidget {
   final UserModel user;
@@ -18,10 +19,16 @@ class _ClinicStaffDashboardState extends State<ClinicStaffDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Clinic Staff Dashboard'),
+      appBar: AppHeader(
+        title: 'Clinic Staff Dashboard',
+        subtitle: widget.user.clinicName ?? 'Clinic',
+        showBackButton: false,
         actions: [
-          IconButton(icon: const Icon(Icons.notifications), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: () {},
+            tooltip: 'Notifications',
+          ),
         ],
       ),
       body: _buildBody(),

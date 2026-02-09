@@ -20,7 +20,7 @@ class _HomePageState extends ConsumerState<HomePage>
   late AnimationController _headerController;
   late AnimationController _cardsController;
   late AnimationController _floatingController;
-  
+
   late Animation<double> _headerAnimation;
   late Animation<double> _cardsAnimation;
   late Animation<double> _floatingAnimation;
@@ -37,40 +37,28 @@ class _HomePageState extends ConsumerState<HomePage>
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
-    _headerAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _headerController,
-      curve: Curves.easeOutCubic,
-    ));
+
+    _headerAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _headerController, curve: Curves.easeOutCubic),
+    );
 
     _cardsController = AnimationController(
       duration: const Duration(milliseconds: 2000),
       vsync: this,
     );
-    
-    _cardsAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _cardsController,
-      curve: Curves.easeOutCubic,
-    ));
+
+    _cardsAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _cardsController, curve: Curves.easeOutCubic),
+    );
 
     _floatingController = AnimationController(
       duration: const Duration(seconds: 3),
       vsync: this,
     );
-    
-    _floatingAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _floatingController,
-      curve: Curves.easeInOut,
-    ));
+
+    _floatingAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _floatingController, curve: Curves.easeInOut),
+    );
   }
 
   void _startAnimations() {
@@ -97,7 +85,7 @@ class _HomePageState extends ConsumerState<HomePage>
         slivers: [
           // Custom App Bar
           _buildCustomAppBar(),
-          
+
           // Main Content
           SliverToBoxAdapter(
             child: Padding(
@@ -108,33 +96,35 @@ class _HomePageState extends ConsumerState<HomePage>
                   // Welcome Section
                   _buildWelcomeSection(),
                   const SizedBox(height: 32),
-                  
+
                   // Stats Cards
                   _buildStatsSection(),
                   const SizedBox(height: 32),
-                  
+
                   // Quick Actions
                   _buildQuickActionsSection(),
                   const SizedBox(height: 32),
-                  
+
                   // Main Features
                   _buildMainFeaturesSection(),
                   const SizedBox(height: 32),
-                  
+
                   // Analytics Chart
                   _buildAnalyticsSection(),
                   const SizedBox(height: 32),
-                  
+
                   // Recent Activity
                   _buildRecentActivitySection(),
-                  const SizedBox(height: 100), // Bottom padding for FAB
+                  const SizedBox(
+                    height: 120,
+                  ), // Bottom padding for FAB and navigation
                 ],
               ),
             ),
           ),
         ],
       ),
-      floatingActionButton: _buildFloatingActionButton(),
+      // floatingActionButton: _buildFloatingActionButton(),
     );
   }
 
@@ -147,9 +137,7 @@ class _HomePageState extends ConsumerState<HomePage>
       elevation: 0,
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: AppTheme.primaryGradient,
-          ),
+          decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -178,9 +166,9 @@ class _HomePageState extends ConsumerState<HomePage>
                       );
                     },
                   ),
-                  
+
                   const SizedBox(width: 16),
-                  
+
                   // Greeting
                   Expanded(
                     child: AnimatedBuilder(
@@ -196,13 +184,17 @@ class _HomePageState extends ConsumerState<HomePage>
                               children: [
                                 Text(
                                   'Good ${_getGreeting()}',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(
                                     color: Colors.white.withOpacity(0.9),
                                   ),
                                 ),
                                 Text(
                                   'Dr. John Smith',
-                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleLarge?.copyWith(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w700,
                                   ),
@@ -214,7 +206,7 @@ class _HomePageState extends ConsumerState<HomePage>
                       },
                     ),
                   ),
-                  
+
                   // Notifications
                   AnimatedBuilder(
                     animation: _headerAnimation,
@@ -307,14 +299,18 @@ class _HomePageState extends ConsumerState<HomePage>
                           children: [
                             Text(
                               'AI Diagnosis Ready',
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              style: Theme.of(
+                                context,
+                              ).textTheme.titleLarge?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
                             Text(
                               'Your AI assistant is ready to help with patient diagnosis',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodyMedium?.copyWith(
                                 color: Colors.white.withOpacity(0.9),
                               ),
                             ),
@@ -340,9 +336,7 @@ class _HomePageState extends ConsumerState<HomePage>
                       icon: const Icon(Icons.add),
                       label: const Text(
                         'Start New Diagnosis',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
                   ),
@@ -399,7 +393,12 @@ class _HomePageState extends ConsumerState<HomePage>
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -415,11 +414,7 @@ class _HomePageState extends ConsumerState<HomePage>
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 24,
-            ),
+            child: Icon(icon, color: color, size: 24),
           ),
           const SizedBox(height: 12),
           AnimatedCounter(
@@ -433,9 +428,9 @@ class _HomePageState extends ConsumerState<HomePage>
           const SizedBox(height: 4),
           Text(
             title,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
             textAlign: TextAlign.center,
           ),
         ],
@@ -456,9 +451,9 @@ class _HomePageState extends ConsumerState<HomePage>
               children: [
                 Text(
                   'Quick Actions',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -469,7 +464,7 @@ class _HomePageState extends ConsumerState<HomePage>
                         icon: Icons.person_add,
                         color: AppTheme.primaryColor,
                         onTap: () {
-                          // TODO: Navigate to new patient form
+                          context.go('/patient/add');
                         },
                       ),
                     ),
@@ -505,9 +500,9 @@ class _HomePageState extends ConsumerState<HomePage>
               children: [
                 Text(
                   'Main Features',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 16),
                 GridView.count(
@@ -595,10 +590,7 @@ class _HomePageState extends ConsumerState<HomePage>
                     ],
                   ),
                   const SizedBox(height: 20),
-                  SizedBox(
-                    height: 200,
-                    child: ChartWidget(),
-                  ),
+                  SizedBox(height: 200, child: ChartWidget()),
                 ],
               ),
             ),
@@ -707,9 +699,9 @@ class _HomePageState extends ConsumerState<HomePage>
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 Text(
                   subtitle,
@@ -722,32 +714,32 @@ class _HomePageState extends ConsumerState<HomePage>
           ),
           Text(
             time,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppTheme.textSecondary,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(color: AppTheme.textSecondary),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildFloatingActionButton() {
-    return AnimatedBuilder(
-      animation: _floatingController,
-      builder: (context, child) {
-        return Transform.scale(
-          scale: 1.0 + (_floatingAnimation.value * 0.05),
-          child: FloatingActionButton.extended(
-            onPressed: () => context.go('/diagnosis'),
-            backgroundColor: AppTheme.primaryColor,
-            icon: const Icon(Icons.add),
-            label: const Text('New Diagnosis'),
-            elevation: 8,
-          ),
-        );
-      },
-    );
-  }
+  // Widget _buildFloatingActionButton() {
+  //   return AnimatedBuilder(
+  //     animation: _floatingController,
+  //     builder: (context, child) {
+  //       return Transform.scale(
+  //         scale: 1.0 + (_floatingAnimation.value * 0.05),
+  //         child: FloatingActionButton.extended(
+  //           onPressed: () => context.go('/diagnosis'),
+  //           backgroundColor: const Color.fromARGB(255, 125, 46, 66),
+  //           icon: const Icon(Icons.add),
+  //           label: const Text('New Diagnosis'),
+  //           elevation: 8,
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   String _getGreeting() {
     final hour = DateTime.now().hour;
